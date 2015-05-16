@@ -1,0 +1,73 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:scrollbars="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <EditText
+            android:id="@+id/register_name_field_et"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="200dp"
+            android:layout_centerHorizontal="true"
+            android:ems="10"
+            android:hint="NAME"
+            android:inputType="text"
+            android:maxLines="1" />
+
+        <EditText
+            android:id="@+id/register_email_field_et"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/register_name_field_et"
+            android:layout_centerHorizontal="true"
+            android:ems="10"
+            android:hint="EMAIL"
+            android:inputType="textEmailAddress"
+            android:maxLines="1"></EditText>
+
+        <EditText
+            android:id="@+id/register_password_field_et"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/register_email_field_et"
+            android:layout_centerHorizontal="true"
+            android:ems="10"
+            android:hint="PASSWORD"
+            android:inputType="textPassword"
+            android:maxLines="1"></EditText>
+
+        <Button
+            android:id="@+id/register_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/register_password_field_et"
+            android:layout_centerHorizontal="true"
+            android:text="REGISTER" />
+
+        <Button
+            android:id="@+id/login_btn"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_below="@+id/register_btn"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
+            android:text="LOG IN"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/test_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/login_btn"
+            android:layout_centerHorizontal="true"
+            android:text="null"
+            android:layout_margin="10dp"/>
+
+    </RelativeLayout>
+
+</ScrollView>
