@@ -19,5 +19,12 @@ public class Contract {
         public static final String TITLE_COLUMN_NAME_1 = "INSTRUCTOR_ID";
         public static final String TITLE_COLUMN_NAME_2  = "TITLE_NAME";
     }
+    public static abstract class Entry_students {
+        public static final String STUDENT_TABLE_NAME = "STUDENTS";
+        public static final String STUDENT_COLUMN_NAME_1 = "REGISTRATION_NO";
+        public static final String STUDENT_COLUMN_NAME_2 = "INSTRUCTOR_ID";
+        public static final String STUDENT_COLUMN_NAME_3 = "TITLE_NAME";
+        public static final String STUDENT_COLUMN_NAME_4  = "NAME";
+    }
 
 }

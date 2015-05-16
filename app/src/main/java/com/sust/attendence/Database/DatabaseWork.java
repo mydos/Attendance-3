@@ -21,7 +21,7 @@ public class DatabaseWork {
     private UserSessionManager session;
 
     public DatabaseWork(Context context) {
-        this.context=context;
+        this.context = context;
         initialize();
 
     }
@@ -31,16 +31,16 @@ public class DatabaseWork {
         session = new UserSessionManager(context);
     }
 
-    public boolean check_db_for_login(String email_et_text,String password_et_text) {
+    public boolean check_db_for_login(String email_et_text, String password_et_text) {
         db = Attendance_db.getReadableDatabase();
 
-        String[] projection = { Contract.Entry._ID, Contract.Entry.INSTRUCTOR_COLUMN_NAME_1,
-                Contract.Entry.INSTRUCTOR_COLUMN_NAME_2, Contract.Entry.INSTRUCTOR_COLUMN_NAME_3, };
+        String[] projection = {Contract.Entry._ID, Contract.Entry.INSTRUCTOR_COLUMN_NAME_1,
+                Contract.Entry.INSTRUCTOR_COLUMN_NAME_2, Contract.Entry.INSTRUCTOR_COLUMN_NAME_3,};
 
         String selection = Contract.Entry.INSTRUCTOR_COLUMN_NAME_2 + "=? AND "
                 + Contract.Entry.INSTRUCTOR_COLUMN_NAME_3 + "=?";
 
-        String[] selectionArgs = { email_et_text, password_et_text };
+        String[] selectionArgs = {email_et_text, password_et_text};
         Cursor c = db.query(Contract.Entry.INSTRUCTOR_TABLE_NAME, // The table to query
                 projection, // The columns to return
                 selection, // The columns for the WHERE clause
@@ -51,14 +51,14 @@ public class DatabaseWork {
         );
 
         c.moveToFirst();
-        if(c.getCount()>0){
-           session.createUserLoginSession(c.getString(1),c.getInt(0));
+        if (c.getCount() > 0) {
+            session.createUserLoginSession(c.getString(1), c.getInt(0));
         }
 
         return c.getCount() > 0 ? true : false;
     }
 
-    public void register_instructor(String register_name_et_text,String register_email_et_text,String register_password_et_text) {
+    public void register_instructor(String register_name_et_text, String register_email_et_text, String register_password_et_text) {
         db = Attendance_db.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(Contract.Entry.INSTRUCTOR_COLUMN_NAME_1, register_name_et_text);
@@ -75,7 +75,7 @@ public class DatabaseWork {
         }
     }
 
-    public void insert_title(String dialog_et_title_text){
+    public void insert_title(String dialog_et_title_text) {
         db = Attendance_db.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(Contract.Entry_title.TITLE_COLUMN_NAME_1, session.get_inst_id());
@@ -90,15 +90,16 @@ public class DatabaseWork {
             ToastMessage.toast_text = "SORRY!! THIS TITLE IS ALREADY STORED.";
         }
     }
-    public ArrayList<String> get_title(){
+
+    public ArrayList<String> get_title() {
         db = Attendance_db.getReadableDatabase();
-        ArrayList<String> title_list= new ArrayList<String>();
+        ArrayList<String> title_list = new ArrayList<String>();
 
-        String[] projection = { Contract.Entry_title.TITLE_COLUMN_NAME_2 };
+        String[] projection = {Contract.Entry_title.TITLE_COLUMN_NAME_2};
 
-        String selection = Contract.Entry_title.TITLE_COLUMN_NAME_1+ "=?";
+        String selection = Contract.Entry_title.TITLE_COLUMN_NAME_1 + "=?";
 
-        String[] selectionArgs = { session.get_inst_id()+"" };
+        String[] selectionArgs = {session.get_inst_id() + ""};
 
         Cursor c = db.query(Contract.Entry_title.TITLE_TABLE_NAME, // The table to query
                 projection, // The columns to return
@@ -111,17 +112,27 @@ public class DatabaseWork {
 
         c.moveToFirst();
 
-        for(int i=0;i<c.getCount();i++){
+        for (int i = 0; i < c.getCount(); i++) {
             title_list.add(c.getString(0));
-             c.moveToNext();
+            c.moveToNext();
         }
         return title_list;
     }
-    public String show(){
+
+    public void delete_instructor() {
+//        // Define 'where' part of query.
+//        String selection = FeedEntry.COLUMN_NAME_ENTRY_ID + " LIKE ?";
+//// Specify arguments in placeholder order.
+//        String[] selectionArgs = {String.valueOf(rowId)};
+//// Issue SQL statement.
+//        db.delete(table_name, selection, selectionArgs);
+    }
+
+    public String show() {
         db = Attendance_db.getReadableDatabase();
 
-        String[] projection = { Contract.Entry._ID, Contract.Entry.INSTRUCTOR_COLUMN_NAME_1,
-                Contract.Entry.INSTRUCTOR_COLUMN_NAME_2, Contract.Entry.INSTRUCTOR_COLUMN_NAME_3, };
+        String[] projection = {Contract.Entry._ID, Contract.Entry.INSTRUCTOR_COLUMN_NAME_1,
+                Contract.Entry.INSTRUCTOR_COLUMN_NAME_2, Contract.Entry.INSTRUCTOR_COLUMN_NAME_3,};
 
         Cursor c = db.query(Contract.Entry.INSTRUCTOR_TABLE_NAME, // The table to query
                 projection, // The columns to return
@@ -134,13 +145,13 @@ public class DatabaseWork {
         String x = "INSTRUCTOR \n";
         c.moveToFirst();
 
-        for(int i=0;i<c.getCount();i++){
+        for (int i = 0; i < c.getCount(); i++) {
 
-            x+=" "+ c.getString(0)+" "+ c.getString(1)+" "+ c.getString(2)+" "+ c.getString(3)+"\n";
+            x += " " + c.getString(0) + " " + c.getString(1) + " " + c.getString(2) + " " + c.getString(3) + "\n";
             c.moveToNext();
         }
 
-        projection = new String[]{Contract.Entry_title.TITLE_COLUMN_NAME_1, Contract.Entry_title.TITLE_COLUMN_NAME_2 };
+        projection = new String[]{Contract.Entry_title.TITLE_COLUMN_NAME_1, Contract.Entry_title.TITLE_COLUMN_NAME_2};
 
         c = db.query(Contract.Entry_title.TITLE_TABLE_NAME, // The table to query
                 projection, // The columns to return
@@ -150,16 +161,16 @@ public class DatabaseWork {
                 null, // don't filter by row groups
                 null // The sort order
         );
-        x+="\n TITLE \n";
+        x += "\n TITLE \n";
         c.moveToFirst();
 
-        for(int i=0;i<c.getCount();i++){
+        for (int i = 0; i < c.getCount(); i++) {
 
-            x+=" "+ c.getString(0)+" "+ c.getString(1)+"\n";
+            x += " " + c.getString(0) + " " + c.getString(1) + "\n";
             c.moveToNext();
         }
-        ToastMessage.toast_text=x+"    c    =  "+c;
-        ToastMessage.show_toast(context,ToastMessage.toast_text);
+        ToastMessage.toast_text = x + "    c    =  " + c;
+        ToastMessage.show_toast(context, ToastMessage.toast_text);
         return x;
     }
 }

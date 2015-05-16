@@ -5,11 +5,14 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.sust.attendence.Database.DatabaseWork;
 import com.sust.attendence.Others.ToastMessage;
@@ -24,8 +27,9 @@ public class ManageActivity extends Activity implements View.OnClickListener {
     ArrayAdapter<String> spinner_adapter;
     private List<String> spinner_item;
     private Button create_title_btn, add_individual_btn;
-    private EditText dialog_et_title;
-    private String dialog_et_title_text;
+    private EditText dialog_et_title, dialog_et_ind_reg_no, dialog_et_ind_name;
+    private TextView dialog_et_ind_inst_name, dialog_et_ind_title_name;
+    private String dialog_et_title_text, dialog_et_ind_reg_no_text, dialog_et_ind_name_text, spinner_selected_item;
     private UserSessionManager session;
 
     @Override
@@ -61,8 +65,64 @@ public class ManageActivity extends Activity implements View.OnClickListener {
                 appear_title_dialog();
                 break;
             case R.id.add_individual_btn:
+
+                if (title_spinner.getCount()<=0) {
+                    ToastMessage.toast_text = "You have not created any title yet ! ";
+                    ToastMessage.show_toast(ManageActivity.this, ToastMessage.toast_text);
+
+                } else {
+                    spinner_selected_item = title_spinner.getSelectedItem().toString();
+                    appear_add_individual_Dialog();
+
+                }
                 break;
         }
+    }
+
+    protected void appear_add_individual_Dialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        // Get the layout inflater
+        LayoutInflater inflater = this.getLayoutInflater();
+        View layout = inflater.inflate(R.layout.custom_dialog_add_individual, null);
+        // Inflate and set the layout for the dialog
+        // Pass null as the parent view because its going in the dialog
+        // layout
+        builder.setView(layout);
+        // Add action buttons
+        dialog_et_ind_reg_no = (EditText) layout.findViewById(R.id.individual_registration_no_et);
+        dialog_et_ind_name = (EditText) layout.findViewById(R.id.individual_name_et);
+        dialog_et_ind_inst_name = (TextView) layout.findViewById(R.id.inst_name_tv);
+        dialog_et_ind_title_name = (TextView) layout.findViewById(R.id.course_title_tv);
+
+        dialog_et_ind_inst_name.setText("INSTRUCTOR NAME : " + session.get_name());
+        dialog_et_ind_title_name.setText("TITLE NAME : " + spinner_selected_item);
+
+        builder.setPositiveButton("SUBMIT",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        // sign in the user ...
+                        dialog_et_ind_reg_no_text = dialog_et_ind_reg_no.getText().toString().trim();
+                        dialog_et_ind_name_text = dialog_et_ind_name.getText().toString().trim();
+                        if (!dialog_et_ind_reg_no_text.equals("") && !dialog_et_ind_name_text.equals("")) {
+                            ToastMessage.toast_text = "Individual added Successfully!!!";
+                            // new DatabaseWork(ManageActivity.this).add_individual(dialog_et_ind_reg_no_text);
+                        } else {
+                            ToastMessage.toast_text = "Please Provide required field.";
+                        }
+                        ToastMessage.show_toast(ManageActivity.this, ToastMessage.toast_text);
+                    }
+                });
+        builder.setNegativeButton("CANCEL",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                    }
+                });
+
+        builder.create();
+        builder.show();
+
     }
 
     protected void appear_title_dialog() {
@@ -104,6 +164,27 @@ public class ManageActivity extends Activity implements View.OnClickListener {
         builder.create();
         builder.show();
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the others_menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.others_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.exit:
+                finish();
+                break;
+            case R.id.logout:
+                session.logoutUser();
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
 

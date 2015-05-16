@@ -5,6 +5,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -70,6 +72,28 @@ public class CallActivity extends Activity implements OnTouchListener {
     public boolean onTouch(View v, MotionEvent event) {
         // TODO Auto-generated method stub
         return false;
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the others_menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.others_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.exit:
+                finish();
+                break;
+            case R.id.logout:
+                session.logoutUser();
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }

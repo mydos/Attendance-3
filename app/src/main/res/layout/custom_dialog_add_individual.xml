@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <ImageView
         android:layout_width="match_parent"
@@ -13,9 +13,22 @@
         android:src="@drawable/ic_launcher" />
 
 
+    <TextView
+        android:id="@+id/inst_name_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:text="INSTRUCTOR NAME " />
+
+    <TextView
+        android:id="@+id/course_title_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:text="COURSE TITLE " />
 
     <EditText
-        android:id="@+id/login_email_feild_et"
+        android:id="@+id/individual_registration_no_et"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
@@ -23,11 +36,11 @@
         android:layout_marginRight="4dp"
         android:layout_marginTop="4dp"
         android:fontFamily="sans-serif"
-        android:hint="Email"
-        android:inputType="textEmailAddress" />
+        android:hint="REGISTRATION_NO"
+        android:inputType="number" />
 
     <EditText
-        android:id="@+id/login_password_feild_et"
+        android:id="@+id/individual_name_et"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
@@ -35,7 +48,6 @@
         android:layout_marginRight="4dp"
         android:layout_marginTop="4dp"
         android:fontFamily="sans-serif"
-        android:hint="password"
-        android:inputType="textPassword" />
+        android:hint="NAME" />
 
 </LinearLayout>
