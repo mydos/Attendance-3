@@ -169,6 +169,27 @@ public class DatabaseWork {
             x += " " + c.getString(0) + " " + c.getString(1) + "\n";
             c.moveToNext();
         }
+
+        projection = new String[]{Contract.Entry_students.STUDENT_COLUMN_NAME_1, Contract.Entry_students.STUDENT_COLUMN_NAME_2,
+        Contract.Entry_students.STUDENT_COLUMN_NAME_3,Contract.Entry_students.STUDENT_COLUMN_NAME_4};
+
+        c = db.query(Contract.Entry_students.STUDENT_TABLE_NAME, // The table to query
+                projection, // The columns to return
+                null, // The columns for the WHERE clause
+                null, // The values for the WHERE clause
+                null, // don't group the rows
+                null, // don't filter by row groups
+                null // The sort order
+        );
+        x += "\n STUDENTS \n";
+        c.moveToFirst();
+
+        for (int i = 0; i < c.getCount(); i++) {
+
+            x += " " + c.getString(0) + " " + c.getString(1)+" " + c.getString(2) + " " + c.getString(3) + "\n";
+            c.moveToNext();
+        }
+
         ToastMessage.toast_text = x + "    c    =  " + c;
         ToastMessage.show_toast(context, ToastMessage.toast_text);
         return x;
