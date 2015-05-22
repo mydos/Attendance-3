@@ -58,6 +58,47 @@ public class DatabaseWork {
         return c.getCount() > 0 ? true : false;
     }
 
+    public void add_individual(int reg_no, String students_name, String title_name) {
+        db = Attendance_db.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(Contract.Entry_students.STUDENT_COLUMN_NAME_1, reg_no);
+        values.put(Contract.Entry_students.STUDENT_COLUMN_NAME_2, session.get_inst_id());
+        values.put(Contract.Entry_students.STUDENT_COLUMN_NAME_3, title_name);
+        values.put(Contract.Entry_students.STUDENT_COLUMN_NAME_4, students_name);
+
+        try {
+            db.insertOrThrow(
+                    Contract.Entry_students.STUDENT_TABLE_NAME,
+                    null,
+                    values);
+        } catch (Exception e) {
+            e.printStackTrace();
+            ToastMessage.toast_text = "SORRY!! ERROR IN INPUT!!.";
+        }
+    }
+
+    public Cursor get_student_list(String title_name) {
+        db = Attendance_db.getReadableDatabase();
+
+        String[] projection = {Contract.Entry_students._ID,Contract.Entry_students.STUDENT_COLUMN_NAME_1, Contract.Entry_students.STUDENT_COLUMN_NAME_2,
+                Contract.Entry_students.STUDENT_COLUMN_NAME_3, Contract.Entry_students.STUDENT_COLUMN_NAME_4};
+
+        String selection = Contract.Entry_students.STUDENT_COLUMN_NAME_2 + "=? AND " +
+                Contract.Entry_students.STUDENT_COLUMN_NAME_3 + "=?";
+
+        String[] selectionArgs = {session.get_inst_id() + "", title_name + ""};
+
+        Cursor c = db.query(Contract.Entry_students.STUDENT_TABLE_NAME, // The table to query
+                projection, // The columns to return
+                selection, // The columns for the WHERE clause
+                selectionArgs, // The values for the WHERE clause
+                null, // don't group the rows
+                null, // don't filter by row groups
+                null // The sort order
+        );
+        return c;
+    }
+
     public void register_instructor(String register_name_et_text, String register_email_et_text, String register_password_et_text) {
         db = Attendance_db.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -75,8 +116,9 @@ public class DatabaseWork {
         }
     }
 
-    public void insert_title(String dialog_et_title_text) {
+    public boolean insert_title(String dialog_et_title_text) {
         db = Attendance_db.getWritableDatabase();
+        boolean insert_flag =false;
         ContentValues values = new ContentValues();
         values.put(Contract.Entry_title.TITLE_COLUMN_NAME_1, session.get_inst_id());
         values.put(Contract.Entry_title.TITLE_COLUMN_NAME_2, dialog_et_title_text);
@@ -86,9 +128,11 @@ public class DatabaseWork {
                     Contract.Entry_title.TITLE_TABLE_NAME,
                     null,
                     values);
+            insert_flag =true;
         } catch (Exception e) {
             ToastMessage.toast_text = "SORRY!! THIS TITLE IS ALREADY STORED.";
         }
+        return insert_flag;
     }
 
     public ArrayList<String> get_title() {
@@ -170,8 +214,8 @@ public class DatabaseWork {
             c.moveToNext();
         }
 
-        projection = new String[]{Contract.Entry_students.STUDENT_COLUMN_NAME_1, Contract.Entry_students.STUDENT_COLUMN_NAME_2,
-        Contract.Entry_students.STUDENT_COLUMN_NAME_3,Contract.Entry_students.STUDENT_COLUMN_NAME_4};
+        projection = new String[]{Contract.Entry_students._ID,Contract.Entry_students.STUDENT_COLUMN_NAME_1, Contract.Entry_students.STUDENT_COLUMN_NAME_2,
+                Contract.Entry_students.STUDENT_COLUMN_NAME_3, Contract.Entry_students.STUDENT_COLUMN_NAME_4};
 
         c = db.query(Contract.Entry_students.STUDENT_TABLE_NAME, // The table to query
                 projection, // The columns to return
@@ -186,7 +230,7 @@ public class DatabaseWork {
 
         for (int i = 0; i < c.getCount(); i++) {
 
-            x += " " + c.getString(0) + " " + c.getString(1)+" " + c.getString(2) + " " + c.getString(3) + "\n";
+            x += " " + c.getString(0) + " " + c.getString(1) + " " + c.getString(2) + " " + c.getString(3) + "\n";
             c.moveToNext();
         }
 

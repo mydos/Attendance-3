@@ -17,9 +17,9 @@
         android:id="@+id/title_spinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/title_tv"
+        android:layout_alignBaseline="@+id/title_tv"
         android:layout_toLeftOf="@+id/create_title_btn"
-        android:layout_alignBaseline="@+id/title_tv"/>
+        android:layout_toRightOf="@id/title_tv" />
 
     <Button
         android:id="@+id/create_title_btn"
@@ -35,8 +35,8 @@
         android:id="@+id/individual_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/title_tv"
         android:layout_alignParentLeft="true"
+        android:layout_below="@id/title_tv"
         android:layout_marginTop="100dp"
         android:padding="10dp"
         android:text="INDIVIDUAL : " />
@@ -50,6 +50,20 @@
         android:layout_toRightOf="@+id/individual_tv"
         android:text="ADD"
         android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/add_individual_btn"
+        android:layout_margin="20dp">
+
+        <ListView
+            android:id="@+id/individual_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        </ListView>
+    </RelativeLayout>
 
 
 </RelativeLayout>

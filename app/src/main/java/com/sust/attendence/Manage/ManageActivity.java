@@ -1,19 +1,26 @@
 package com.sust.attendence.Manage;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.sust.attendence.Database.Contract;
 import com.sust.attendence.Database.DatabaseWork;
 import com.sust.attendence.Others.ToastMessage;
 import com.sust.attendence.R;
@@ -29,8 +36,11 @@ public class ManageActivity extends Activity implements View.OnClickListener {
     private Button create_title_btn, add_individual_btn;
     private EditText dialog_et_title, dialog_et_ind_reg_no, dialog_et_ind_name;
     private TextView dialog_et_ind_inst_name, dialog_et_ind_title_name;
-    private String dialog_et_title_text, dialog_et_ind_reg_no_text, dialog_et_ind_name_text, spinner_selected_item;
+    private String dialog_et_title_text, dialog_et_ind_name_text, spinner_selected_item, dialog_et_ind_reg_no_text;
+    private int dialog_et_ind_reg_number;
     private UserSessionManager session;
+    private ListView student_list;
+    private SimpleCursorAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,16 +56,49 @@ public class ManageActivity extends Activity implements View.OnClickListener {
         session = new UserSessionManager(this);
         if (session.checkLogin())
             finish();
+
         title_spinner = (Spinner) findViewById(R.id.title_spinner);
         spinner_item = new ArrayList<String>();
         spinner_item = new DatabaseWork(this).get_title();
         spinner_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, spinner_item);
+        title_spinner.setAdapter(spinner_adapter);
+
         create_title_btn = (Button) findViewById(R.id.create_title_btn);
         add_individual_btn = (Button) findViewById(R.id.add_individual_btn);
-        title_spinner.setAdapter(spinner_adapter);
 
         create_title_btn.setOnClickListener(this);
         add_individual_btn.setOnClickListener(this);
+        title_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                show_student_list();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+    }
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    protected void show_student_list() {
+        student_list = (ListView) findViewById(R.id.individual_list);
+
+        String[] columns = {Contract.Entry_students.STUDENT_COLUMN_NAME_1, Contract.Entry_students.STUDENT_COLUMN_NAME_4};
+        int[] views = {R.id.display_reg, R.id.display_name};
+        Cursor c = null;
+
+        if (title_spinner.getCount() > 0) {
+            spinner_selected_item = title_spinner.getSelectedItem().toString();
+            c = new DatabaseWork(this).get_student_list(spinner_selected_item);
+            adapter = new SimpleCursorAdapter(this, R.layout.student_list_view, c, columns, views, 0);
+
+        } else {
+            adapter = null;
+        }
+        student_list.setAdapter(adapter);
     }
 
     @Override
@@ -66,7 +109,7 @@ public class ManageActivity extends Activity implements View.OnClickListener {
                 break;
             case R.id.add_individual_btn:
 
-                if (title_spinner.getCount()<=0) {
+                if (title_spinner.getCount() <= 0) {
                     ToastMessage.toast_text = "You have not created any title yet ! ";
                     ToastMessage.show_toast(ManageActivity.this, ToastMessage.toast_text);
 
@@ -106,7 +149,9 @@ public class ManageActivity extends Activity implements View.OnClickListener {
                         dialog_et_ind_name_text = dialog_et_ind_name.getText().toString().trim();
                         if (!dialog_et_ind_reg_no_text.equals("") && !dialog_et_ind_name_text.equals("")) {
                             ToastMessage.toast_text = "Individual added Successfully!!!";
-                            // new DatabaseWork(ManageActivity.this).add_individual(dialog_et_ind_reg_no_text);
+                            dialog_et_ind_reg_number = Integer.parseInt(dialog_et_ind_reg_no_text);
+                            new DatabaseWork(ManageActivity.this).add_individual(dialog_et_ind_reg_number, dialog_et_ind_name_text, title_spinner.getSelectedItem().toString());
+                            show_student_list();
                         } else {
                             ToastMessage.toast_text = "Please Provide required field.";
                         }
@@ -145,8 +190,10 @@ public class ManageActivity extends Activity implements View.OnClickListener {
                         dialog_et_title_text = dialog_et_title.getText().toString().trim();
                         if (!dialog_et_title_text.equals("")) {
                             ToastMessage.toast_text = "Title Created Successfully!!!";
-                            new DatabaseWork(ManageActivity.this).insert_title(dialog_et_title_text);
-
+                            if(new DatabaseWork(ManageActivity.this).insert_title(dialog_et_title_text)) {
+                                spinner_item.add(dialog_et_title_text);
+                                spinner_adapter.notifyDataSetChanged();
+                            }
 
                         } else {
                             ToastMessage.toast_text = "Please Provide Title.";

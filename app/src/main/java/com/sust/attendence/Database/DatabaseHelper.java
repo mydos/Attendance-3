@@ -29,17 +29,31 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "PRIMARY KEY ( " + Contract.Entry_title.TITLE_COLUMN_NAME_1 + COMMA_SEP
             + Contract.Entry_title.TITLE_COLUMN_NAME_2 + ")" + ")";
 
-    private static final String SQL_CREATE_ENTRIES_STUDENT = "CREATE TABLE "
-            + Contract.Entry_students.STUDENT_TABLE_NAME + " (" + Contract.Entry_students.STUDENT_COLUMN_NAME_1 + INT_TYPE + COMMA_SEP
+    private static final String SQL_CREATE_ENTRIES_STUDENT_ = "CREATE TABLE "
+            + Contract.Entry_students.STUDENT_TABLE_NAME + " (" + Contract.Entry_students._ID + " INTEGER AUTOINCREMENT " + COMMA_SEP
+            + Contract.Entry_students.STUDENT_COLUMN_NAME_1 + INT_TYPE + COMMA_SEP
             + Contract.Entry_students.STUDENT_COLUMN_NAME_2 + INT_TYPE + COMMA_SEP
             + Contract.Entry_students.STUDENT_COLUMN_NAME_3 + TEXT_TYPE + COMMA_SEP
             + Contract.Entry_students.STUDENT_COLUMN_NAME_4 + TEXT_TYPE + COMMA_SEP
             + FOREIGN_KEY_CONSTRAINT + " ( " + Contract.Entry_students.STUDENT_COLUMN_NAME_2 + COMMA_SEP
             + Contract.Entry_students.STUDENT_COLUMN_NAME_3 + " ) " + " REFERENCES "
             + Contract.Entry_title.TITLE_TABLE_NAME + " ( " + Contract.Entry_title.TITLE_COLUMN_NAME_1 + COMMA_SEP
-            + Contract.Entry_title.TITLE_COLUMN_NAME_2 + " ) ON DELETE CASCADE " +COMMA_SEP
-            + " PRIMARY KEY ( " +Contract.Entry_students.STUDENT_COLUMN_NAME_1 +COMMA_SEP+Contract.Entry_students.STUDENT_COLUMN_NAME_2
-            + COMMA_SEP + Contract.Entry_students.STUDENT_COLUMN_NAME_3 +" ) " + " ) ";
+            + Contract.Entry_title.TITLE_COLUMN_NAME_2 + " ) ON DELETE CASCADE " + COMMA_SEP
+            + " PRIMARY KEY ( " + Contract.Entry_students.STUDENT_COLUMN_NAME_1 + COMMA_SEP + Contract.Entry_students.STUDENT_COLUMN_NAME_2
+            + COMMA_SEP + Contract.Entry_students.STUDENT_COLUMN_NAME_3 + " ) " + " ) ";
+
+    private static final String SQL_CREATE_ENTRIES_STUDENT ="CREATE TABLE "
+            + Contract.Entry_students.STUDENT_TABLE_NAME + " (" + Contract.Entry_students._ID + " INTEGER PRIMARY KEY " + COMMA_SEP
+            + Contract.Entry_students.STUDENT_COLUMN_NAME_1 + INT_TYPE + COMMA_SEP
+            + Contract.Entry_students.STUDENT_COLUMN_NAME_2 + INT_TYPE + COMMA_SEP
+            + Contract.Entry_students.STUDENT_COLUMN_NAME_3 + TEXT_TYPE + COMMA_SEP
+            + Contract.Entry_students.STUDENT_COLUMN_NAME_4 + TEXT_TYPE + COMMA_SEP
+            + FOREIGN_KEY_CONSTRAINT + " ( " + Contract.Entry_students.STUDENT_COLUMN_NAME_2 + COMMA_SEP
+            + Contract.Entry_students.STUDENT_COLUMN_NAME_3 + " ) " + " REFERENCES "
+            + Contract.Entry_title.TITLE_TABLE_NAME + " ( " + Contract.Entry_title.TITLE_COLUMN_NAME_1 + COMMA_SEP
+            + Contract.Entry_title.TITLE_COLUMN_NAME_2 + " ) ON DELETE CASCADE " + COMMA_SEP
+            + " UNIQUE ( " + Contract.Entry_students.STUDENT_COLUMN_NAME_1 + COMMA_SEP + Contract.Entry_students.STUDENT_COLUMN_NAME_2
+            + COMMA_SEP + Contract.Entry_students.STUDENT_COLUMN_NAME_3 + " ) " + " ) ";;
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
