@@ -1301,11 +1301,12 @@ containing a value of this type.
         public static final int abc_textfield_search_material=0x7f020032;
         public static final int ball=0x7f020033;
         public static final int button_1=0x7f020034;
-        public static final int ic_launcher=0x7f020035;
-        public static final int one=0x7f020036;
-        public static final int splash_background=0x7f020037;
-        public static final int three=0x7f020038;
-        public static final int two=0x7f020039;
+        public static final int cross_button=0x7f020035;
+        public static final int ic_launcher=0x7f020036;
+        public static final int one=0x7f020037;
+        public static final int splash_background=0x7f020038;
+        public static final int three=0x7f020039;
+        public static final int two=0x7f02003a;
     }
     public static final class id {
         public static final int action_bar=0x7f080031;
@@ -1335,12 +1336,12 @@ containing a value of this type.
         public static final int default_activity_button=0x7f080024;
         public static final int dialog=0x7f08001b;
         public static final int disableHome=0x7f08000c;
-        public static final int display_name=0x7f080056;
-        public static final int display_reg=0x7f080057;
+        public static final int display_name=0x7f080058;
+        public static final int display_reg=0x7f080059;
         public static final int dropdown=0x7f08001c;
         public static final int edit_query=0x7f080033;
         public static final int end=0x7f080014;
-        public static final int exit=0x7f080058;
+        public static final int exit=0x7f08005a;
         public static final int expand_activities_button=0x7f080022;
         public static final int expanded_menu=0x7f080028;
         public static final int home=0x7f080004;
@@ -1358,7 +1359,7 @@ containing a value of this type.
         public static final int login_btn=0x7f080044;
         public static final int login_email_feild_et=0x7f08004f;
         public static final int login_password_feild_et=0x7f080050;
-        public static final int logout=0x7f080059;
+        public static final int logout=0x7f08005b;
         public static final int manage_btn=0x7f08004d;
         public static final int middle=0x7f080015;
         public static final int never=0x7f080019;
@@ -1385,12 +1386,14 @@ containing a value of this type.
         public static final int showCustom=0x7f08000f;
         public static final int showHome=0x7f080010;
         public static final int showTitle=0x7f080011;
+        public static final int spinner_title_tv=0x7f080056;
         public static final int split_action_bar=0x7f080007;
         public static final int submit_area=0x7f08003c;
         public static final int swiper_iv=0x7f08003f;
         public static final int tabMode=0x7f08000b;
         public static final int test_tv=0x7f080045;
         public static final int title=0x7f080027;
+        public static final int title_cross_button=0x7f080057;
         public static final int title_spinner=0x7f080047;
         public static final int title_tv=0x7f080046;
         public static final int up=0x7f080008;
@@ -1433,8 +1436,9 @@ containing a value of this type.
         public static final int custom_dialog=0x7f03001b;
         public static final int custom_dialog_add_individual=0x7f03001c;
         public static final int custom_dialog_create_title=0x7f03001d;
-        public static final int student_list_view=0x7f03001e;
-        public static final int support_simple_spinner_dropdown_item=0x7f03001f;
+        public static final int spinner_row=0x7f03001e;
+        public static final int student_list_view=0x7f03001f;
+        public static final int support_simple_spinner_dropdown_item=0x7f030020;
     }
     public static final class menu {
         public static final int loggin_menu=0x7f0c0000;
@@ -1460,6 +1464,7 @@ containing a value of this type.
         public static final int action_settings=0x7f0a0010;
         public static final int app_name=0x7f0a0011;
         public static final int hello_world=0x7f0a0012;
+        public static final int spinner_title=0x7f0a0013;
     }
     public static final class style {
         /** 

@@ -3,6 +3,7 @@ package com.sust.attendence.Manage;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Build;
@@ -11,15 +12,18 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.sust.attendence.Adapter.Spinner_title_adapter;
 import com.sust.attendence.Database.Contract;
 import com.sust.attendence.Database.DatabaseWork;
 import com.sust.attendence.Others.ToastMessage;
@@ -31,7 +35,7 @@ import java.util.List;
 
 public class ManageActivity extends Activity implements View.OnClickListener {
     private Spinner title_spinner;
-    ArrayAdapter<String> spinner_adapter;
+    private MyAdapter spinner_adapter;
     private List<String> spinner_item;
     private Button create_title_btn, add_individual_btn;
     private EditText dialog_et_title, dialog_et_ind_reg_no, dialog_et_ind_name;
@@ -41,6 +45,7 @@ public class ManageActivity extends Activity implements View.OnClickListener {
     private UserSessionManager session;
     private ListView student_list;
     private SimpleCursorAdapter adapter;
+    String[] objects={"asd","fgh","jkl"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +54,39 @@ public class ManageActivity extends Activity implements View.OnClickListener {
         setContentView(R.layout.activity_manage);
 
         initialize();
+
+    }
+    public class MyAdapter extends ArrayAdapter<String>
+    {
+
+        public MyAdapter(Context context, int textViewResourceId, String[] objects)
+        {
+            super(context, textViewResourceId, objects);
+        }
+
+
+        @Override
+        public View getDropDownView(int position, View convertView,ViewGroup parent)
+        {
+            return getCustomView(position, convertView, parent);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent)
+        {
+            return getCustomView(position, convertView, parent);
+        }
+
+        public View getCustomView(int position, View convertView, ViewGroup parent)
+        {
+
+            LayoutInflater inflater=getLayoutInflater();
+            View row=inflater.inflate(R.layout.spinner_row, parent, false);
+            TextView label=(TextView)row.findViewById(R.id.spinner_title_tv);
+            label.setText(objects[position]);
+
+            return row;
+        }
 
     }
 
@@ -60,7 +98,9 @@ public class ManageActivity extends Activity implements View.OnClickListener {
         title_spinner = (Spinner) findViewById(R.id.title_spinner);
         spinner_item = new ArrayList<String>();
         spinner_item = new DatabaseWork(this).get_title();
-        spinner_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, spinner_item);
+
+        spinner_adapter = new MyAdapter(this, R.layout.spinner_row, objects);
+
         title_spinner.setAdapter(spinner_adapter);
 
         create_title_btn = (Button) findViewById(R.id.create_title_btn);

@@ -19,6 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/title_tv"
         android:layout_toLeftOf="@+id/create_title_btn"
+        android:prompt="@string/spinner_title"
         android:layout_toRightOf="@id/title_tv" />
 
     <Button
