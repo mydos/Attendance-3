@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -18,10 +19,12 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.sust.attendence.Adapter.Spinner_title_adapter;
 import com.sust.attendence.Database.Contract;
@@ -32,12 +35,14 @@ import com.sust.attendence.Session.UserSessionManager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class ManageActivity extends Activity implements View.OnClickListener {
     private Spinner title_spinner;
-    private MyAdapter spinner_adapter;
+    private MyAdapter spinner_adapter_custom;
     private List<String> spinner_item;
     private Button create_title_btn, add_individual_btn;
+    private ToggleButton toggle_button;
     private EditText dialog_et_title, dialog_et_ind_reg_no, dialog_et_ind_name;
     private TextView dialog_et_ind_inst_name, dialog_et_ind_title_name;
     private String dialog_et_title_text, dialog_et_ind_name_text, spinner_selected_item, dialog_et_ind_reg_no_text;
@@ -45,7 +50,10 @@ public class ManageActivity extends Activity implements View.OnClickListener {
     private UserSessionManager session;
     private ListView student_list;
     private SimpleCursorAdapter adapter;
-    String[] objects={"asd","fgh","jkl"};
+    private ArrayAdapter<String> spinner_adapter;
+    private boolean pos[];
+    private int total=0;
+    String[] objects = {"asd", "fgh", "jkl"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,33 +64,29 @@ public class ManageActivity extends Activity implements View.OnClickListener {
         initialize();
 
     }
-    public class MyAdapter extends ArrayAdapter<String>
-    {
 
-        public MyAdapter(Context context, int textViewResourceId, String[] objects)
-        {
+    public class MyAdapter extends ArrayAdapter<String> {
+
+        public MyAdapter(Context context, int textViewResourceId, String[] objects) {
             super(context, textViewResourceId, objects);
         }
 
 
         @Override
-        public View getDropDownView(int position, View convertView,ViewGroup parent)
-        {
+        public View getDropDownView(int position, View convertView, ViewGroup parent) {
             return getCustomView(position, convertView, parent);
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent)
-        {
+        public View getView(int position, View convertView, ViewGroup parent) {
             return getCustomView(position, convertView, parent);
         }
 
-        public View getCustomView(int position, View convertView, ViewGroup parent)
-        {
+        public View getCustomView(int position, View convertView, ViewGroup parent) {
 
-            LayoutInflater inflater=getLayoutInflater();
-            View row=inflater.inflate(R.layout.spinner_row, parent, false);
-            TextView label=(TextView)row.findViewById(R.id.spinner_title_tv);
+            LayoutInflater inflater = getLayoutInflater();
+            View row = inflater.inflate(R.layout.spinner_row, parent, false);
+            TextView label = (TextView) row.findViewById(R.id.spinner_title_tv);
             label.setText(objects[position]);
 
             return row;
@@ -99,18 +103,24 @@ public class ManageActivity extends Activity implements View.OnClickListener {
         spinner_item = new ArrayList<String>();
         spinner_item = new DatabaseWork(this).get_title();
 
-        spinner_adapter = new MyAdapter(this, R.layout.spinner_row, objects);
+        // spinner_adapter = new MyAdapter(this, R.layout.spinner_row, objects);
+        spinner_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, spinner_item);
 
         title_spinner.setAdapter(spinner_adapter);
 
         create_title_btn = (Button) findViewById(R.id.create_title_btn);
         add_individual_btn = (Button) findViewById(R.id.add_individual_btn);
 
+        toggle_button = (ToggleButton)findViewById(R.id.toggleButton);
+        toggle_button.setOnClickListener(this);
+
         create_title_btn.setOnClickListener(this);
         add_individual_btn.setOnClickListener(this);
+
         title_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                pos=null;
                 show_student_list();
             }
 
@@ -139,6 +149,8 @@ public class ManageActivity extends Activity implements View.OnClickListener {
             adapter = null;
         }
         student_list.setAdapter(adapter);
+
+
     }
 
     @Override
@@ -158,6 +170,34 @@ public class ManageActivity extends Activity implements View.OnClickListener {
                     appear_add_individual_Dialog();
 
                 }
+                break;
+            case R.id.toggleButton:
+                    if(toggle_button.isChecked()){
+                        total=0;
+                        pos=new boolean[adapter.getCount()];
+                        for(int i=0;i<adapter.getCount();i++){
+                            pos[i]=false;
+                        }
+                        student_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                if(pos[position]) {
+                                    view.setBackgroundColor(Color.WHITE);
+                                    pos[position]=false;
+                                    --total;
+                                }else{
+                                    view.setBackgroundColor(Color.RED);
+                                    pos[position]=true;
+                                    ++total;
+                                }
+                                ToastMessage.show_toast(ManageActivity.this, adapter.getCount()+"  done  "+total);
+                            }
+                        });
+                    }
+                else{
+                        student_list.setOnItemClickListener(null);
+                        show_student_list();
+                    }
                 break;
         }
     }
@@ -230,7 +270,7 @@ public class ManageActivity extends Activity implements View.OnClickListener {
                         dialog_et_title_text = dialog_et_title.getText().toString().trim();
                         if (!dialog_et_title_text.equals("")) {
                             ToastMessage.toast_text = "Title Created Successfully!!!";
-                            if(new DatabaseWork(ManageActivity.this).insert_title(dialog_et_title_text)) {
+                            if (new DatabaseWork(ManageActivity.this).insert_title(dialog_et_title_text)) {
                                 spinner_item.add(dialog_et_title_text);
                                 spinner_adapter.notifyDataSetChanged();
                             }
