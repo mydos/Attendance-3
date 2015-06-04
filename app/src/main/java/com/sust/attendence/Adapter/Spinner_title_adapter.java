@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.sust.attendence.Manage.ManageActivity;
 import com.sust.attendence.Others.ToastMessage;
 import com.sust.attendence.R;
 
@@ -37,20 +38,23 @@ public class Spinner_title_adapter extends ArrayAdapter<String> {
     public View getView(int position, View convertView, ViewGroup parent) {
         return getCustomView(position, convertView, parent);
     }
-    public View getCustomView(final int position, View convertView, ViewGroup parent){
-        LayoutInflater inflater=LayoutInflater.from(context);
-        View row = inflater.inflate(R.layout.spinner_row,parent,false);
-        ToastMessage.show_toast(context,"Position : "+position);
-        TextView title_tv =(TextView) row.findViewById(R.id.spinner_title_tv);
-        title_tv.setText(title.get(position));
+    public View getCustomView(final int position, View row, ViewGroup parent){
+        if(row==null) {
+            LayoutInflater inflater = LayoutInflater.from(context);
+            row = inflater.inflate(R.layout.spinner_row, parent, false);
+        }
 
-//        Button btn =(Button) row.findViewById(R.id.title_cross_button);
-//        btn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                ToastMessage.show_toast(context,"Position : "+position);
-//            }
-//        });
+        TextView label = (TextView) row.findViewById(R.id.spinner_title_tv);
+        label.setText(title.get(position));
+
+
+        Button btn =(Button)row.findViewById(R.id.title_cross_button);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ToastMessage.show_toast(context, "pos : " + position);
+            }
+        });
 
         return row;
     }

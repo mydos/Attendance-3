@@ -1300,13 +1300,17 @@ containing a value of this type.
         public static final int abc_textfield_search_default_mtrl_alpha=0x7f020031;
         public static final int abc_textfield_search_material=0x7f020032;
         public static final int ball=0x7f020033;
-        public static final int button_1=0x7f020034;
-        public static final int cross_button=0x7f020035;
-        public static final int ic_launcher=0x7f020036;
-        public static final int one=0x7f020037;
-        public static final int splash_background=0x7f020038;
-        public static final int three=0x7f020039;
-        public static final int two=0x7f02003a;
+        public static final int btn_cross=0x7f020034;
+        public static final int btn_cross_normal=0x7f020035;
+        public static final int btn_cross_pressed=0x7f020036;
+        public static final int btn_cross_selected=0x7f020037;
+        public static final int button_1=0x7f020038;
+        public static final int cross_button=0x7f020039;
+        public static final int ic_launcher=0x7f02003a;
+        public static final int one=0x7f02003b;
+        public static final int splash_background=0x7f02003c;
+        public static final int three=0x7f02003d;
+        public static final int two=0x7f02003e;
     }
     public static final class id {
         public static final int action_bar=0x7f080031;

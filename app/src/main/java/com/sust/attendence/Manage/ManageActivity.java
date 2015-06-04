@@ -3,12 +3,14 @@ package com.sust.attendence.Manage;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,10 +27,12 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.ToggleButton;
+import android.support.v4.app.DialogFragment;
 
 import com.sust.attendence.Adapter.Spinner_title_adapter;
 import com.sust.attendence.Database.Contract;
 import com.sust.attendence.Database.DatabaseWork;
+import com.sust.attendence.Listener.DialogListener;
 import com.sust.attendence.Others.ToastMessage;
 import com.sust.attendence.R;
 import com.sust.attendence.Session.UserSessionManager;
@@ -37,9 +41,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class ManageActivity extends Activity implements View.OnClickListener {
+public class ManageActivity extends FragmentActivity implements View.OnClickListener, DialogListener {
     private Spinner title_spinner;
-    private MyAdapter spinner_adapter_custom;
+    private Spinner_title_adapter spinner_adapter_custom;
     private List<String> spinner_item;
     private Button create_title_btn, add_individual_btn;
     private ToggleButton toggle_button;
@@ -52,75 +56,54 @@ public class ManageActivity extends Activity implements View.OnClickListener {
     private SimpleCursorAdapter adapter;
     private ArrayAdapter<String> spinner_adapter;
     private boolean pos[];
-    private int total=0;
+    private int total = 0;
+    private DialogFragment df;
     String[] objects = {"asd", "fgh", "jkl"};
+    Bundle bdl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage);
-
+        check_session();
         initialize();
 
     }
 
-    public class MyAdapter extends ArrayAdapter<String> {
-
-        public MyAdapter(Context context, int textViewResourceId, String[] objects) {
-            super(context, textViewResourceId, objects);
-        }
-
-
-        @Override
-        public View getDropDownView(int position, View convertView, ViewGroup parent) {
-            return getCustomView(position, convertView, parent);
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            return getCustomView(position, convertView, parent);
-        }
-
-        public View getCustomView(int position, View convertView, ViewGroup parent) {
-
-            LayoutInflater inflater = getLayoutInflater();
-            View row = inflater.inflate(R.layout.spinner_row, parent, false);
-            TextView label = (TextView) row.findViewById(R.id.spinner_title_tv);
-            label.setText(objects[position]);
-
-            return row;
-        }
-
-    }
-
-    protected void initialize() {
+    protected void check_session() {
         session = new UserSessionManager(this);
         if (session.checkLogin())
             finish();
+    }
+
+    protected void initialize() {
+
+        bdl = new Bundle();
+        df = new CreateDialog();
 
         title_spinner = (Spinner) findViewById(R.id.title_spinner);
+        create_title_btn = (Button) findViewById(R.id.create_title_btn);
+        add_individual_btn = (Button) findViewById(R.id.add_individual_btn);
+        toggle_button = (ToggleButton) findViewById(R.id.toggleButton);
+
         spinner_item = new ArrayList<String>();
         spinner_item = new DatabaseWork(this).get_title();
 
-        // spinner_adapter = new MyAdapter(this, R.layout.spinner_row, objects);
+        spinner_adapter_custom = new Spinner_title_adapter(this, R.layout.spinner_row, spinner_item);
         spinner_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, spinner_item);
 
-        title_spinner.setAdapter(spinner_adapter);
+        title_spinner.setAdapter(spinner_adapter_custom);
 
-        create_title_btn = (Button) findViewById(R.id.create_title_btn);
-        add_individual_btn = (Button) findViewById(R.id.add_individual_btn);
 
-        toggle_button = (ToggleButton)findViewById(R.id.toggleButton);
         toggle_button.setOnClickListener(this);
-
         create_title_btn.setOnClickListener(this);
         add_individual_btn.setOnClickListener(this);
 
         title_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                pos=null;
+                pos = null;
                 show_student_list();
             }
 
@@ -157,7 +140,11 @@ public class ManageActivity extends Activity implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.create_title_btn:
-                appear_title_dialog();
+                bdl.clear();
+                bdl.putString("dialog_name", "create_title");
+                df.setArguments(bdl);
+                df.show(getSupportFragmentManager(), "dialog");
+
                 break;
             case R.id.add_individual_btn:
 
@@ -167,132 +154,44 @@ public class ManageActivity extends Activity implements View.OnClickListener {
 
                 } else {
                     spinner_selected_item = title_spinner.getSelectedItem().toString();
-                    appear_add_individual_Dialog();
 
+                    bdl.clear();
+                    bdl.putString("dialog_name", "add_individual");
+                    bdl.putString("spinner_selected_item",spinner_selected_item);
+                    df.setArguments(bdl);
+                    df.show(getSupportFragmentManager(), "dialog");
                 }
                 break;
             case R.id.toggleButton:
-                    if(toggle_button.isChecked()){
-                        total=0;
-                        pos=new boolean[adapter.getCount()];
-                        for(int i=0;i<adapter.getCount();i++){
-                            pos[i]=false;
-                        }
-                        student_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                if(pos[position]) {
-                                    view.setBackgroundColor(Color.WHITE);
-                                    pos[position]=false;
-                                    --total;
-                                }else{
-                                    view.setBackgroundColor(Color.RED);
-                                    pos[position]=true;
-                                    ++total;
-                                }
-                                ToastMessage.show_toast(ManageActivity.this, adapter.getCount()+"  done  "+total);
+                if (toggle_button.isChecked()) {
+                    total = 0;
+                    pos = new boolean[adapter.getCount()];
+                    for (int i = 0; i < adapter.getCount(); i++) {
+                        pos[i] = false;
+                    }
+                    student_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            if (pos[position]) {
+                                view.setBackgroundColor(Color.WHITE);
+                                pos[position] = false;
+                                --total;
+                            } else {
+                                view.setBackgroundColor(Color.RED);
+                                pos[position] = true;
+                                ++total;
                             }
-                        });
-                    }
-                else{
-                        student_list.setOnItemClickListener(null);
-                        show_student_list();
-                    }
+                            ToastMessage.show_toast(ManageActivity.this, adapter.getCount() + "  done  " + total);
+                        }
+                    });
+                } else {
+                    student_list.setOnItemClickListener(null);
+                    show_student_list();
+                }
                 break;
+
         }
     }
-
-    protected void appear_add_individual_Dialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        // Get the layout inflater
-        LayoutInflater inflater = this.getLayoutInflater();
-        View layout = inflater.inflate(R.layout.custom_dialog_add_individual, null);
-        // Inflate and set the layout for the dialog
-        // Pass null as the parent view because its going in the dialog
-        // layout
-        builder.setView(layout);
-        // Add action buttons
-        dialog_et_ind_reg_no = (EditText) layout.findViewById(R.id.individual_registration_no_et);
-        dialog_et_ind_name = (EditText) layout.findViewById(R.id.individual_name_et);
-        dialog_et_ind_inst_name = (TextView) layout.findViewById(R.id.inst_name_tv);
-        dialog_et_ind_title_name = (TextView) layout.findViewById(R.id.course_title_tv);
-
-        dialog_et_ind_inst_name.setText("INSTRUCTOR NAME : " + session.get_name());
-        dialog_et_ind_title_name.setText("TITLE NAME : " + spinner_selected_item);
-
-        builder.setPositiveButton("SUBMIT",
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        // sign in the user ...
-                        dialog_et_ind_reg_no_text = dialog_et_ind_reg_no.getText().toString().trim();
-                        dialog_et_ind_name_text = dialog_et_ind_name.getText().toString().trim();
-                        if (!dialog_et_ind_reg_no_text.equals("") && !dialog_et_ind_name_text.equals("")) {
-                            ToastMessage.toast_text = "Individual added Successfully!!!";
-                            dialog_et_ind_reg_number = Integer.parseInt(dialog_et_ind_reg_no_text);
-                            new DatabaseWork(ManageActivity.this).add_individual(dialog_et_ind_reg_number, dialog_et_ind_name_text, title_spinner.getSelectedItem().toString());
-                            show_student_list();
-                        } else {
-                            ToastMessage.toast_text = "Please Provide required field.";
-                        }
-                        ToastMessage.show_toast(ManageActivity.this, ToastMessage.toast_text);
-                    }
-                });
-        builder.setNegativeButton("CANCEL",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-
-                    }
-                });
-
-        builder.create();
-        builder.show();
-
-    }
-
-    protected void appear_title_dialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        // Get the layout inflater
-        LayoutInflater inflater = this.getLayoutInflater();
-        View layout = inflater.inflate(R.layout.custom_dialog_create_title, null);
-        // Inflate and set the layout for the dialog
-        // Pass null as the parent view because its going in the dialog
-        // layout
-        builder.setView(layout);
-        // Add action buttons
-        dialog_et_title = (EditText) layout.findViewById(R.id.create_title_dialog_et);
-
-        builder.setPositiveButton("SUBMIT",
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        // sign in the user ...
-                        dialog_et_title_text = dialog_et_title.getText().toString().trim();
-                        if (!dialog_et_title_text.equals("")) {
-                            ToastMessage.toast_text = "Title Created Successfully!!!";
-                            if (new DatabaseWork(ManageActivity.this).insert_title(dialog_et_title_text)) {
-                                spinner_item.add(dialog_et_title_text);
-                                spinner_adapter.notifyDataSetChanged();
-                            }
-
-                        } else {
-                            ToastMessage.toast_text = "Please Provide Title.";
-                        }
-                        ToastMessage.show_toast(ManageActivity.this, ToastMessage.toast_text);
-                    }
-                });
-        builder.setNegativeButton("CANCEL",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-
-                    }
-                });
-
-        builder.create();
-        builder.show();
-
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the others_menu; this adds items to the action bar if it is present.
@@ -312,6 +211,35 @@ public class ManageActivity extends Activity implements View.OnClickListener {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onDialogPositiveClick(android.support.v4.app.DialogFragment dialog, Bundle bdll) {
+        String str=bdll.getString("dialog_name");
+        if(str!=null) {
+            switch (str) {
+                case "create_title":
+                    if (bdll.getString("dialog_et_title_text") != null)
+                        spinner_item.add(bdll.getString("dialog_et_title_text"));
+
+                    spinner_adapter_custom.notifyDataSetChanged();
+
+                    break;
+                case "add_individual":
+                    show_student_list();
+                    break;
+                default:
+                    break;
+            }
+        }
+        bdll.clear();
+        bdl.clear();
+    }
+
+    @Override
+    public void onDialogNegativeClick(android.support.v4.app.DialogFragment dialog,Bundle bdll) {
+               bdll.clear();
+               bdl.clear();
     }
 }
 
