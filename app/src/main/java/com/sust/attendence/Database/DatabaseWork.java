@@ -58,6 +58,26 @@ public class DatabaseWork {
         return c.getCount() > 0 ? true : false;
     }
 
+    public boolean delete_title(String title_name) {
+        db = Attendance_db.getReadableDatabase();
+
+        String selection = Contract.Entry_title.TITLE_COLUMN_NAME_2 + " LIKE ?";
+        String[] selectionArgs = {title_name};
+
+
+        int count = db.delete(
+                Contract.Entry_title.TITLE_TABLE_NAME,
+                selection,
+                selectionArgs
+        );
+//        ToastMessage.show_toast(context,title_name+ " row : "+count);
+        if (count > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public void add_individual(int reg_no, String students_name, String title_name) {
         db = Attendance_db.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -80,7 +100,7 @@ public class DatabaseWork {
     public Cursor get_student_list(String title_name) {
         db = Attendance_db.getReadableDatabase();
 
-        String[] projection = {Contract.Entry_students._ID,Contract.Entry_students.STUDENT_COLUMN_NAME_1, Contract.Entry_students.STUDENT_COLUMN_NAME_2,
+        String[] projection = {Contract.Entry_students._ID, Contract.Entry_students.STUDENT_COLUMN_NAME_1, Contract.Entry_students.STUDENT_COLUMN_NAME_2,
                 Contract.Entry_students.STUDENT_COLUMN_NAME_3, Contract.Entry_students.STUDENT_COLUMN_NAME_4};
 
         String selection = Contract.Entry_students.STUDENT_COLUMN_NAME_2 + "=? AND " +
@@ -118,7 +138,7 @@ public class DatabaseWork {
 
     public boolean insert_title(String dialog_et_title_text) {
         db = Attendance_db.getWritableDatabase();
-        boolean insert_flag =false;
+        boolean insert_flag = false;
         ContentValues values = new ContentValues();
         values.put(Contract.Entry_title.TITLE_COLUMN_NAME_1, session.get_inst_id());
         values.put(Contract.Entry_title.TITLE_COLUMN_NAME_2, dialog_et_title_text);
@@ -128,7 +148,7 @@ public class DatabaseWork {
                     Contract.Entry_title.TITLE_TABLE_NAME,
                     null,
                     values);
-            insert_flag =true;
+            insert_flag = true;
         } catch (Exception e) {
             ToastMessage.toast_text = "SORRY!! THIS TITLE IS ALREADY STORED.";
         }
@@ -214,7 +234,7 @@ public class DatabaseWork {
             c.moveToNext();
         }
 
-        projection = new String[]{Contract.Entry_students._ID,Contract.Entry_students.STUDENT_COLUMN_NAME_1, Contract.Entry_students.STUDENT_COLUMN_NAME_2,
+        projection = new String[]{Contract.Entry_students._ID, Contract.Entry_students.STUDENT_COLUMN_NAME_1, Contract.Entry_students.STUDENT_COLUMN_NAME_2,
                 Contract.Entry_students.STUDENT_COLUMN_NAME_3, Contract.Entry_students.STUDENT_COLUMN_NAME_4};
 
         c = db.query(Contract.Entry_students.STUDENT_TABLE_NAME, // The table to query

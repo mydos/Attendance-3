@@ -56,7 +56,7 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
     private SimpleCursorAdapter adapter;
     private ArrayAdapter<String> spinner_adapter;
     private boolean pos[];
-    private int total = 0;
+    private int total;
     private DialogFragment df;
     String[] objects = {"asd", "fgh", "jkl"};
     Bundle bdl;
@@ -82,6 +82,11 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
         bdl = new Bundle();
         df = new CreateDialog();
 
+        adapter=null;
+        pos=null;
+        total=0;
+        student_list=null;
+
         title_spinner = (Spinner) findViewById(R.id.title_spinner);
         create_title_btn = (Button) findViewById(R.id.create_title_btn);
         add_individual_btn = (Button) findViewById(R.id.add_individual_btn);
@@ -103,8 +108,8 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
         title_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                pos = null;
-                show_student_list();
+                toggle_button.setChecked(false);
+                manage_listitem();
             }
 
             @Override
@@ -128,12 +133,47 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
             c = new DatabaseWork(this).get_student_list(spinner_selected_item);
             adapter = new SimpleCursorAdapter(this, R.layout.student_list_view, c, columns, views, 0);
 
-        } else {
-            adapter = null;
         }
         student_list.setAdapter(adapter);
 
 
+    }
+
+    protected void set_listitem_position(){
+        if(adapter!=null) {
+            total = 0;
+            pos = new boolean[adapter.getCount()];
+            for (int i = 0; i < adapter.getCount(); i++) {
+                pos[i] = false;
+            }
+        }
+    }
+
+    protected void manage_listitem(){
+        if (toggle_button.isChecked() && adapter!=null) {
+            set_listitem_position();
+            student_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    if (pos[position]) {
+                        view.setBackgroundColor(Color.WHITE);
+                        pos[position] = false;
+                        --total;
+                    } else {
+                        view.setBackgroundColor(Color.RED);
+                        pos[position] = true;
+                        ++total;
+                    }
+                    ToastMessage.show_toast(ManageActivity.this, adapter.getCount() + "  done  " + total);
+                }
+            });
+        } else {
+            if(student_list!=null)
+            student_list.setOnItemClickListener(null);
+
+        }
+        show_student_list();
     }
 
     @Override
@@ -163,35 +203,12 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
                 }
                 break;
             case R.id.toggleButton:
-                if (toggle_button.isChecked()) {
-                    total = 0;
-                    pos = new boolean[adapter.getCount()];
-                    for (int i = 0; i < adapter.getCount(); i++) {
-                        pos[i] = false;
-                    }
-                    student_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            if (pos[position]) {
-                                view.setBackgroundColor(Color.WHITE);
-                                pos[position] = false;
-                                --total;
-                            } else {
-                                view.setBackgroundColor(Color.RED);
-                                pos[position] = true;
-                                ++total;
-                            }
-                            ToastMessage.show_toast(ManageActivity.this, adapter.getCount() + "  done  " + total);
-                        }
-                    });
-                } else {
-                    student_list.setOnItemClickListener(null);
-                    show_student_list();
-                }
+                manage_listitem();
                 break;
 
         }
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the others_menu; this adds items to the action bar if it is present.
