@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Build;
@@ -31,6 +32,7 @@ import android.support.v4.app.DialogFragment;
 
 import com.sust.attendence.Adapter.Listview_individual_adapter;
 import com.sust.attendence.Adapter.Spinner_title_adapter;
+import com.sust.attendence.Call.CallActivity;
 import com.sust.attendence.Database.Contract;
 import com.sust.attendence.Database.DatabaseWork;
 import com.sust.attendence.Listener.DialogListener;
@@ -131,6 +133,16 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
         }
         student_list.setAdapter(listview_adapter_custom);
 
+        student_list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+
+                Intent call_intent = new Intent(ManageActivity.this, CallActivity.class);
+                startActivity(call_intent);
+                ToastMessage.show_toast(ManageActivity.this,"Yes");
+                return true;
+            }
+        });
 
     }
 
