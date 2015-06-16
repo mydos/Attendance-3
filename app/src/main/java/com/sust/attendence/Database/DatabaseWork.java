@@ -5,10 +5,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.sust.attendence.Others.Individual_info;
 import com.sust.attendence.Others.ToastMessage;
 import com.sust.attendence.Session.UserSessionManager;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Ikhtiar on 5/12/2015.
@@ -78,6 +80,27 @@ public class DatabaseWork {
         }
     }
 
+    public boolean delete_individual(String reg_no, String title_name) {
+        db = Attendance_db.getReadableDatabase();
+
+        String selection = Contract.Entry_students.STUDENT_COLUMN_NAME_1 + "=? AND "
+                + Contract.Entry_students.STUDENT_COLUMN_NAME_3 + "=? ";
+        String[] selectionArgs = {reg_no,title_name};
+
+
+        int count = db.delete(
+                Contract.Entry_students.STUDENT_TABLE_NAME,
+                selection,
+                selectionArgs
+        );
+//        ToastMessage.show_toast(context,title_name+ " row : "+count);
+        if (count > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public void add_individual(int reg_no, String students_name, String title_name) {
         db = Attendance_db.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -97,7 +120,9 @@ public class DatabaseWork {
         }
     }
 
-    public Cursor get_student_list(String title_name) {
+    public ArrayList<Individual_info> get_student_list(String title_name) {
+        ArrayList<Individual_info> individual_info = new ArrayList<Individual_info>();
+
         db = Attendance_db.getReadableDatabase();
 
         String[] projection = {Contract.Entry_students._ID, Contract.Entry_students.STUDENT_COLUMN_NAME_1, Contract.Entry_students.STUDENT_COLUMN_NAME_2,
@@ -116,7 +141,16 @@ public class DatabaseWork {
                 null, // don't filter by row groups
                 null // The sort order
         );
-        return c;
+
+        c.moveToFirst();
+
+
+        for (int i = 0; i < c.getCount(); i++) {
+            individual_info.add(new Individual_info(c.getString(1), c.getString(4)));
+            c.moveToNext();
+        }
+
+        return individual_info;
     }
 
     public void register_instructor(String register_name_et_text, String register_email_et_text, String register_password_et_text) {

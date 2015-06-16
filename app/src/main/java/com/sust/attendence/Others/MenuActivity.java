@@ -15,6 +15,7 @@ import com.sust.attendence.Manage.ManageActivity;
 import com.sust.attendence.R;
 import com.sust.attendence.Session.UserSessionManager;
 
+
 public class MenuActivity extends Activity implements OnClickListener {
 
     private Button manage_btn, call_btn;

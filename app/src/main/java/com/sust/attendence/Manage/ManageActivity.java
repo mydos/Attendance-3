@@ -29,6 +29,7 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 import android.support.v4.app.DialogFragment;
 
+import com.sust.attendence.Adapter.Listview_individual_adapter;
 import com.sust.attendence.Adapter.Spinner_title_adapter;
 import com.sust.attendence.Database.Contract;
 import com.sust.attendence.Database.DatabaseWork;
@@ -44,6 +45,7 @@ import java.util.Map;
 public class ManageActivity extends FragmentActivity implements View.OnClickListener, DialogListener {
     private Spinner title_spinner;
     private Spinner_title_adapter spinner_adapter_custom;
+    private Listview_individual_adapter listview_adapter_custom;
     private List<String> spinner_item;
     private Button create_title_btn, add_individual_btn;
     private ToggleButton toggle_button;
@@ -55,7 +57,7 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
     private ListView student_list;
     private SimpleCursorAdapter adapter;
     private ArrayAdapter<String> spinner_adapter;
-    private boolean pos[];
+    public static boolean pos[];
     private int total;
     private DialogFragment df;
     String[] objects = {"asd", "fgh", "jkl"};
@@ -82,10 +84,10 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
         bdl = new Bundle();
         df = new CreateDialog();
 
-        adapter=null;
-        pos=null;
-        total=0;
-        student_list=null;
+        listview_adapter_custom=null;
+        pos = null;
+        total = 0;
+        student_list = null;
 
         title_spinner = (Spinner) findViewById(R.id.title_spinner);
         create_title_btn = (Button) findViewById(R.id.create_title_btn);
@@ -96,7 +98,6 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
         spinner_item = new DatabaseWork(this).get_title();
 
         spinner_adapter_custom = new Spinner_title_adapter(this, R.layout.spinner_row, spinner_item);
-        spinner_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, spinner_item);
 
         title_spinner.setAdapter(spinner_adapter_custom);
 
@@ -124,40 +125,34 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
     protected void show_student_list() {
         student_list = (ListView) findViewById(R.id.individual_list);
 
-        String[] columns = {Contract.Entry_students.STUDENT_COLUMN_NAME_1, Contract.Entry_students.STUDENT_COLUMN_NAME_4};
-        int[] views = {R.id.display_reg, R.id.display_name};
-        Cursor c = null;
-
         if (title_spinner.getCount() > 0) {
             spinner_selected_item = title_spinner.getSelectedItem().toString();
-            c = new DatabaseWork(this).get_student_list(spinner_selected_item);
-            adapter = new SimpleCursorAdapter(this, R.layout.student_list_view, c, columns, views, 0);
-
+            listview_adapter_custom = new Listview_individual_adapter(this,R.layout.student_list_view,new DatabaseWork(this).get_student_list(spinner_selected_item),spinner_selected_item);
         }
-        student_list.setAdapter(adapter);
+        student_list.setAdapter(listview_adapter_custom);
 
 
     }
 
-    protected void set_listitem_position(){
-        if(adapter!=null) {
+    protected void set_listitem_position() {
+        if (listview_adapter_custom != null) {
             total = 0;
-            pos = new boolean[adapter.getCount()];
-            for (int i = 0; i < adapter.getCount(); i++) {
+            pos = new boolean[listview_adapter_custom.getCount()];
+            for (int i = 0; i < listview_adapter_custom.getCount(); i++) {
                 pos[i] = false;
             }
         }
     }
 
-    protected void manage_listitem(){
-        if (toggle_button.isChecked() && adapter!=null) {
+    protected void manage_listitem() {
+        if (toggle_button.isChecked() && listview_adapter_custom != null) {
             set_listitem_position();
             student_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     if (pos[position]) {
-                        view.setBackgroundColor(Color.WHITE);
+                        view.setBackgroundColor(Color.TRANSPARENT);
                         pos[position] = false;
                         --total;
                     } else {
@@ -165,13 +160,13 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
                         pos[position] = true;
                         ++total;
                     }
-                    ToastMessage.show_toast(ManageActivity.this, adapter.getCount() + "  done  " + total);
+                    ToastMessage.show_toast(ManageActivity.this, listview_adapter_custom.getCount() + "  done  " + total);
                 }
             });
         } else {
-            if(student_list!=null)
-            student_list.setOnItemClickListener(null);
-
+            if (student_list != null)
+                student_list.setOnItemClickListener(null);
+                pos=null;
         }
         show_student_list();
     }
@@ -197,7 +192,7 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
 
                     bdl.clear();
                     bdl.putString("dialog_name", "add_individual");
-                    bdl.putString("spinner_selected_item",spinner_selected_item);
+                    bdl.putString("spinner_selected_item", spinner_selected_item);
                     df.setArguments(bdl);
                     df.show(getSupportFragmentManager(), "dialog");
                 }
@@ -232,8 +227,8 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
 
     @Override
     public void onDialogPositiveClick(android.support.v4.app.DialogFragment dialog, Bundle bdll) {
-        String str=bdll.getString("dialog_name");
-        if(str!=null) {
+        String str = bdll.getString("dialog_name");
+        if (str != null) {
             switch (str) {
                 case "create_title":
                     if (bdll.getString("dialog_et_title_text") != null)
@@ -254,9 +249,8 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
     }
 
     @Override
-    public void onDialogNegativeClick(android.support.v4.app.DialogFragment dialog,Bundle bdll) {
-               bdll.clear();
-               bdl.clear();
+    public void onDialogNegativeClick(android.support.v4.app.DialogFragment dialog, Bundle bdll) {
+        bdll.clear();
+        bdl.clear();
     }
 }
-
