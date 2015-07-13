@@ -17,7 +17,6 @@
         android:id="@+id/title_spinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/title_tv"
         android:layout_toLeftOf="@+id/create_title_btn"
         android:prompt="@string/spinner_title"
         android:layout_toRightOf="@id/title_tv" />
@@ -38,7 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@id/title_tv"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="30dp"
         android:padding="10dp"
         android:text="INDIVIDUAL : " />
 
@@ -65,7 +64,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/add_individual_btn"
-        android:layout_margin="20dp">
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="50dp">
 
         <ListView
             android:id="@+id/individual_list"
@@ -75,6 +77,14 @@
         </ListView>
     </RelativeLayout>
 
+    <Button
+        android:id="@+id/save_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="SAVE"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
 
 
 </RelativeLayout>
