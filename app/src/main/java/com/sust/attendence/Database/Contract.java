@@ -13,7 +13,7 @@ public class Contract {
         public static final String INSTRUCTOR_COLUMN_NAME_3 = "INSTRUCTOR_PASSWORD";
     }
 
-    public static abstract class Entry_title {
+    public static abstract class Entry_title{
 
         public static final String TITLE_TABLE_NAME = "TITLE";
         public static final String TITLE_COLUMN_NAME_1 = "INSTRUCTOR_ID";
@@ -26,5 +26,6 @@ public class Contract {
         public static final String STUDENT_COLUMN_NAME_3 = "TITLE_NAME";
         public static final String STUDENT_COLUMN_NAME_4  = "NAME";
     }
+
 
 }
