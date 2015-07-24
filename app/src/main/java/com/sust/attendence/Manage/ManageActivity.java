@@ -36,11 +36,14 @@ import com.sust.attendence.Call.CallActivity;
 import com.sust.attendence.Database.Contract;
 import com.sust.attendence.Database.DatabaseWork;
 import com.sust.attendence.Listener.DialogListener;
+import com.sust.attendence.Others.Individual_info;
 import com.sust.attendence.Others.ToastMessage;
 import com.sust.attendence.R;
 import com.sust.attendence.Session.UserSessionManager;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -49,7 +52,7 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
     private Spinner_title_adapter spinner_adapter_custom;
     private Listview_individual_adapter listview_adapter_custom;
     private List<String> spinner_item;
-    private Button create_title_btn, add_individual_btn;
+    private Button create_title_btn, add_individual_btn,save_btn;
     private ToggleButton toggle_button;
     private EditText dialog_et_title, dialog_et_ind_reg_no, dialog_et_ind_name;
     private TextView dialog_et_ind_inst_name, dialog_et_ind_title_name;
@@ -95,6 +98,7 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
         create_title_btn = (Button) findViewById(R.id.create_title_btn);
         add_individual_btn = (Button) findViewById(R.id.add_individual_btn);
         toggle_button = (ToggleButton) findViewById(R.id.toggleButton);
+        save_btn = (Button) findViewById(R.id.save_btn);
 
         spinner_item = new ArrayList<String>();
         spinner_item = new DatabaseWork(this).get_title();
@@ -107,6 +111,7 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
         toggle_button.setOnClickListener(this);
         create_title_btn.setOnClickListener(this);
         add_individual_btn.setOnClickListener(this);
+        save_btn.setOnClickListener(this);
 
         title_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -129,7 +134,11 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
 
         if (title_spinner.getCount() > 0) {
             spinner_selected_item = title_spinner.getSelectedItem().toString();
-            listview_adapter_custom = new Listview_individual_adapter(this,R.layout.student_list_view,new DatabaseWork(this).get_student_list(spinner_selected_item),spinner_selected_item);
+            ArrayList<Individual_info> studentsList = new DatabaseWork(this).get_student_list(spinner_selected_item);
+
+            Collections.sort(studentsList,Individual_info.Comparator);
+
+            listview_adapter_custom = new Listview_individual_adapter(this,R.layout.student_list_view,studentsList,spinner_selected_item);
         }
         student_list.setAdapter(listview_adapter_custom);
 
@@ -158,6 +167,7 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
 
     protected void manage_listitem() {
         if (toggle_button.isChecked() && listview_adapter_custom != null) {
+            save_btn.setVisibility(View.VISIBLE);
             set_listitem_position();
             student_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -179,6 +189,7 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
             if (student_list != null)
                 student_list.setOnItemClickListener(null);
                 pos=null;
+            save_btn.setVisibility(View.INVISIBLE);
         }
         show_student_list();
     }
@@ -213,6 +224,18 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
                 manage_listitem();
                 break;
 
+            case R.id.save_btn:
+                bdl.clear();
+                bdl.putString("dialog_name","save_roll_call");
+                bdl.putInt("total_individual",listview_adapter_custom.getCount());
+                bdl.putInt("absent_individual",total);
+
+                df.setArguments(bdl);
+                df.show(getSupportFragmentManager(),"dialog");
+
+
+                break;
+
         }
     }
 
@@ -245,12 +268,14 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
                 case "create_title":
                     if (bdll.getString("dialog_et_title_text") != null)
                         spinner_item.add(bdll.getString("dialog_et_title_text"));
-
                     spinner_adapter_custom.notifyDataSetChanged();
-
                     break;
                 case "add_individual":
                     show_student_list();
+                    break;
+                case "save_roll_call":
+                    toggle_button.setChecked(false);
+                    manage_listitem();
                     break;
                 default:
                     break;

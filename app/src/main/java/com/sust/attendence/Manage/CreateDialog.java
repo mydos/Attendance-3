@@ -28,7 +28,7 @@ public class CreateDialog extends DialogFragment {
     private EditText dialog_et_title, dialog_et_ind_reg_no, dialog_et_ind_name, login_email_et, login_password_et;
     private TextView dialog_et_ind_inst_name, dialog_et_ind_title_name;
     private String dialog_et_title_text, dialog_et_ind_reg_no_text, dialog_et_ind_name_text, login_email_et_text, login_password_et_text;
-    private int dialog_et_ind_reg_number;
+    private int dialog_et_ind_reg_number,total_ind,present_ind,absent_ind;
     private Bundle bdl;
     DialogListener mListener;
     private String which_dialog;
@@ -64,6 +64,8 @@ public class CreateDialog extends DialogFragment {
                 return appear_add_individual_Dialog();
             case "login_dialog":
                 return login_dialog();
+            case "save_roll_call":
+                return save_roll_call();
             default:
                 return appear();
         }
@@ -80,6 +82,33 @@ public class CreateDialog extends DialogFragment {
         session = new UserSessionManager(activity);
     }
 
+    public Dialog save_roll_call(){
+        inflater = activity.getLayoutInflater();
+        layout = inflater.inflate(R.layout.custom_dialog_save_roll_call, null);
+        builder.setView(layout);
+
+        total_ind = bdl.getInt("total_individual");
+        absent_ind = bdl.getInt("absent_individual");
+        present_ind = total_ind - absent_ind;
+
+        ((TextView) layout.findViewById(R.id.total_individual_tv)).setText("TOTAL : "+total_ind);
+        ((TextView) layout.findViewById(R.id.present_tv)).setText("PRESENT : "+present_ind);
+        ((TextView) layout.findViewById(R.id.absent_tv)).setText("ABSENT : "+absent_ind);
+
+
+        builder.setPositiveButton("CONFIRM", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        mListener.onDialogPositiveClick(CreateDialog.this, bdl);
+                        ToastMessage.show_toast(activity, "SAVED");
+                    }
+                })
+                .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        mListener.onDialogNegativeClick(CreateDialog.this, bdl);
+                    }
+                });
+        return builder.create();
+    }
     public Dialog appear() {
         builder.setMessage("ERROR IN DIALOG APPEARANCE!!!")
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
