@@ -206,8 +206,12 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
                 break;
             case R.id.add_individual_btn:
 
-                if (title_spinner.getCount() <= 0) {
+                if (title_spinner.getCount() <= 0 || toggle_button.isChecked()) {
+
                     ToastMessage.toast_text = "You have not created any title yet ! ";
+                    if(toggle_button.isChecked()){
+                        ToastMessage.toast_text = "You have to turn off calling state in order to add ! ";
+                    }
                     ToastMessage.show_toast(ManageActivity.this, ToastMessage.toast_text);
 
                 } else {
@@ -221,10 +225,17 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
                 }
                 break;
             case R.id.toggleButton:
-                manage_listitem();
+                   manage_listitem();
                 break;
 
             case R.id.save_btn:
+//                new DatabaseWork(this).TEST_af(spinner_selected_item,session.get_inst_id());
+//                new DatabaseWork(this).TEST_ar();
+//                ToastMessage.show_toast(ManageActivity.this,ToastMessage.toast_text);
+
+               // ToastMessage.show_toast(ManageActivity.this,new DatabaseWork(this).show_test_af());
+                //ToastMessage.show_toast(ManageActivity.this,new DatabaseWork(this).show_test_ar());
+
                 bdl.clear();
                 bdl.putString("dialog_name","save_roll_call");
                 bdl.putInt("total_individual",listview_adapter_custom.getCount());
@@ -271,8 +282,8 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
                     spinner_adapter_custom.notifyDataSetChanged();
                     break;
                 case "add_individual":
-                    show_student_list();
-                    break;
+                       show_student_list();
+                        break;
                 case "save_roll_call":
                     toggle_button.setChecked(false);
                     manage_listitem();
