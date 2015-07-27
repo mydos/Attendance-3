@@ -146,7 +146,10 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 
-                Intent call_intent = new Intent(ManageActivity.this, CallActivity.class);
+                Intent call_intent = new Intent(ManageActivity.this, StudentInformationActivity.class);
+                Bundle bdl = new Bundle();
+                bdl.putString("title_name",spinner_selected_item);
+                call_intent.putExtras(bdl);
                 startActivity(call_intent);
                 ToastMessage.show_toast(ManageActivity.this,"Yes");
                 return true;
@@ -286,6 +289,8 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
                         break;
                 case "save_roll_call":
                     toggle_button.setChecked(false);
+                    new DatabaseWork(this).insert_attendence_frequency(spinner_selected_item);
+                    ToastMessage.show_toast(this,ToastMessage.toast_text);
                     manage_listitem();
                     break;
                 default:
