@@ -41,6 +41,10 @@ import com.sust.attendence.Others.ToastMessage;
 import com.sust.attendence.R;
 import com.sust.attendence.Session.UserSessionManager;
 
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -52,7 +56,7 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
     private Spinner_title_adapter spinner_adapter_custom;
     private Listview_individual_adapter listview_adapter_custom;
     private List<String> spinner_item;
-    private Button create_title_btn, add_individual_btn,save_btn;
+    private Button create_title_btn, add_individual_btn,save_btn,import_btn;
     private ToggleButton toggle_button;
     private EditText dialog_et_title, dialog_et_ind_reg_no, dialog_et_ind_name;
     private TextView dialog_et_ind_inst_name, dialog_et_ind_title_name;
@@ -63,6 +67,7 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
     private SimpleCursorAdapter adapter;
     private ArrayAdapter<String> spinner_adapter;
     public static boolean pos[];
+    public int reg_no[];
     private int total;
     private DialogFragment df;
     String[] objects = {"asd", "fgh", "jkl"};
@@ -99,6 +104,7 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
         add_individual_btn = (Button) findViewById(R.id.add_individual_btn);
         toggle_button = (ToggleButton) findViewById(R.id.toggleButton);
         save_btn = (Button) findViewById(R.id.save_btn);
+        import_btn = (Button) findViewById(R.id.import_btn);
 
         spinner_item = new ArrayList<String>();
         spinner_item = new DatabaseWork(this).get_title();
@@ -112,6 +118,7 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
         create_title_btn.setOnClickListener(this);
         add_individual_btn.setOnClickListener(this);
         save_btn.setOnClickListener(this);
+        import_btn.setOnClickListener(this);
 
         title_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -149,6 +156,8 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
                 Intent call_intent = new Intent(ManageActivity.this, StudentInformationActivity.class);
                 Bundle bdl = new Bundle();
                 bdl.putString("title_name",spinner_selected_item);
+                String reg_no = ((TextView)view.findViewById(R.id.display_reg)).getText().toString().trim();
+                bdl.putString("reg_no",reg_no);
                 call_intent.putExtras(bdl);
                 startActivity(call_intent);
                 ToastMessage.show_toast(ManageActivity.this,"Yes");
@@ -162,14 +171,16 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
         if (listview_adapter_custom != null) {
             total = 0;
             pos = new boolean[listview_adapter_custom.getCount()];
+            reg_no = new int[listview_adapter_custom.getCount()];
             for (int i = 0; i < listview_adapter_custom.getCount(); i++) {
                 pos[i] = false;
+                reg_no[i]=0;
             }
         }
     }
 
     protected void manage_listitem() {
-        if (toggle_button.isChecked() && listview_adapter_custom != null) {
+        if (toggle_button.isChecked() && listview_adapter_custom.getCount()>0) {
             save_btn.setVisibility(View.VISIBLE);
             set_listitem_position();
             student_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -179,10 +190,12 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
                     if (pos[position]) {
                         view.setBackgroundColor(Color.TRANSPARENT);
                         pos[position] = false;
+                        reg_no[position]=0;
                         --total;
                     } else {
                         view.setBackgroundColor(Color.RED);
                         pos[position] = true;
+                        reg_no[position]=Integer.parseInt(((TextView)view.findViewById(R.id.display_reg)).getText().toString());
                         ++total;
                     }
                     ToastMessage.show_toast(ManageActivity.this, listview_adapter_custom.getCount() + "  done  " + total);
@@ -250,6 +263,27 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
 
                 break;
 
+            case R.id.import_btn:
+                InputStream inputStream = null;
+                ByteArrayOutputStream outputStream=new ByteArrayOutputStream();
+                try {
+
+                    inputStream = getApplicationContext().getAssets().open("teSt.docx");
+
+                    int i = inputStream.read();
+                    while (i!=-1) {
+                        outputStream.write(i);
+                        i = inputStream.read();
+                    }
+                    inputStream.close();
+                    }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+
+                ToastMessage.show_toast(ManageActivity.this,"OK   :   "+outputStream);
+                break;
+
         }
     }
 
@@ -285,12 +319,21 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
                     spinner_adapter_custom.notifyDataSetChanged();
                     break;
                 case "add_individual":
-                       show_student_list();
-                        break;
+                        new DatabaseWork(this).update_absent_record_if_exist(new DatabaseWork(this).get_student_id(bdll.getInt("reg_no"),spinner_selected_item),spinner_selected_item);
+                        show_student_list();
+                    break;
                 case "save_roll_call":
                     toggle_button.setChecked(false);
-                    new DatabaseWork(this).insert_attendence_frequency(spinner_selected_item);
-                    ToastMessage.show_toast(this,ToastMessage.toast_text);
+                    long freq_id=new DatabaseWork(this).update_attendence_frequency(spinner_selected_item);
+                    String v="reg_ no \n";
+                    for(int i=0;i<listview_adapter_custom.getCount();i++){
+                        if(reg_no[i]!=0 && freq_id!=-1){
+                            int std_id = new DatabaseWork(this).get_student_id(reg_no[i],spinner_selected_item);
+                            long id=new DatabaseWork(this).update_absent_record(std_id,freq_id);
+                        }
+                    }
+
+                    ToastMessage.show_toast(this,ToastMessage.toast_text+v);
                     manage_listitem();
                     break;
                 default:
