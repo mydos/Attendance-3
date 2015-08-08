@@ -5,10 +5,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.sust.attendence.Others.Absent_Record;
 import com.sust.attendence.Others.Individual_info;
 import com.sust.attendence.Others.ToastMessage;
 import com.sust.attendence.Session.UserSessionManager;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,6 +62,27 @@ public class DatabaseWork {
         return c.getCount() > 0 ? true : false;
     }
 
+    public int total_class_taken(String title_name){
+        db = Attendance_db.getReadableDatabase();
+
+        String[] projection = {Contract.Entry_attendance_frequency._ID, Contract.Entry_attendance_frequency.COLUMN_NAME_1,
+                Contract.Entry_attendance_frequency.COLUMN_NAME_2,Contract.Entry_attendance_frequency.COLUMN_NAME_3};
+
+        String selection = Contract.Entry_attendance_frequency.COLUMN_NAME_1 + "=? AND " +
+                Contract.Entry_attendance_frequency.COLUMN_NAME_2 + "=?";
+
+        String[] selectionArgs = {session.get_inst_id() + "", title_name + ""};
+
+        Cursor c = db.query(Contract.Entry_attendance_frequency.TABLE_NAME, // The table to query
+                projection, // The columns to return
+                selection, // The columns for the WHERE clause
+                selectionArgs, // The values for the WHERE clause
+                null, // don't group the rows
+                null, // don't filter by row groups
+                null // The sort order
+        );
+    return c.getCount();
+    }
     public boolean delete_title(String title_name) {
         db = Attendance_db.getReadableDatabase();
 
@@ -100,6 +123,250 @@ public class DatabaseWork {
             return false;
         }
     }
+    public long update_attendence_frequency(String spinner_selected_item) {
+        db = Attendance_db.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(Contract.Entry_attendance_frequency.COLUMN_NAME_1, session.get_inst_id());
+        values.put(Contract.Entry_attendance_frequency.COLUMN_NAME_2, spinner_selected_item);
+
+        long id=-1;
+        try {
+            id=db.insertOrThrow(
+                    Contract.Entry_attendance_frequency.TABLE_NAME,
+                    null,
+                    values);
+            ToastMessage.toast_text = "SUCCESS ENTRY.";
+        } catch (Exception e) {
+            e.printStackTrace();
+            ToastMessage.toast_text = "SORRY!! ERROR IN INPUT!!." + e.getMessage();
+        }
+        return id;
+    }
+
+    public long update_absent_record(int std_id,long freq_id){
+        db = Attendance_db.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(Contract.Entry_absent_record.COLUMN_NAME_1, std_id);
+        values.put(Contract.Entry_absent_record.COLUMN_NAME_2, freq_id);
+        values.put(Contract.Entry_absent_record.COLUMN_NAME_3, "comments");
+        long id=-1;
+        try {
+            id=db.insertOrThrow(
+                    Contract.Entry_absent_record.TABLE_NAME,
+                    null,
+                    values);
+            ToastMessage.toast_text = "SUCCESS ENTRY.:)";
+        } catch (Exception e) {
+            e.printStackTrace();
+            ToastMessage.toast_text = "SORRY!! ERROR IN INPUT!!.:("+e.getMessage();
+        }
+        return id;
+    }
+
+    public void update_absent_record_if_exist(int std_id,String title_name){
+        db = Attendance_db.getWritableDatabase();
+
+        String[] projection = {Contract.Entry_attendance_frequency._ID, Contract.Entry_attendance_frequency.COLUMN_NAME_1,
+                Contract.Entry_attendance_frequency.COLUMN_NAME_2,Contract.Entry_attendance_frequency.COLUMN_NAME_3};
+
+        String selection = Contract.Entry_attendance_frequency.COLUMN_NAME_1 + "=? AND " +
+                Contract.Entry_attendance_frequency.COLUMN_NAME_2 + "=?";
+
+        String[] selectionArgs = {session.get_inst_id() + "", title_name + ""};
+
+        Cursor c = db.query(Contract.Entry_attendance_frequency.TABLE_NAME, // The table to query
+                projection, // The columns to return
+                selection, // The columns for the WHERE clause
+                selectionArgs, // The values for the WHERE clause
+                null, // don't group the rows
+                null, // don't filter by row groups
+                null // The sort order
+        );
+
+        c.moveToFirst();
+        String v="";
+
+        for(int i=0;i<c.getCount();i++){
+            update_absent_record(std_id,c.getInt(0));
+            v+=c.getInt(0)+" \n";
+            c.moveToNext();
+        }
+
+        ToastMessage.show_toast(context,v);
+
+    }
+    public ArrayList<Absent_Record> get_absent_record(int std_id,String title_name){
+        db= Attendance_db.getReadableDatabase();
+        String query ="SELECT TIMESTAMP_PER_CALL,COMMENTS from ATTENDANCE_FREQUENCY as AF inner join ABSENT_RECORD as AR " +
+                "where AR.ATTENDANCE_FREQUENCY_ID = AF._ID and TITLE_NAME = '"+title_name+"' and AR.STUDENT_ID = "+std_id+"";
+        Cursor c;
+        ArrayList<Absent_Record> list = new ArrayList<>();
+
+        try{
+            c=db.rawQuery(query,null);
+            c.moveToFirst();
+            for(int i=0;i<c.getCount();i++){
+                list.add(new Absent_Record(Timestamp.valueOf(c.getString(0)),c.getString(1)));
+                c.moveToNext();
+            }
+            return list;
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public int get_frequency_id(String title_name){
+        db = Attendance_db.getReadableDatabase();
+
+        String[] projection = {Contract.Entry_attendance_frequency._ID};
+
+        String selection = Contract.Entry_attendance_frequency.COLUMN_NAME_1 + "=? AND " +
+                Contract.Entry_attendance_frequency.COLUMN_NAME_2 + "=?";
+
+        String[] selectionArgs = {session.get_inst_id() + "", title_name + ""};
+
+        Cursor c = db.query(Contract.Entry_attendance_frequency.TABLE_NAME, // The table to query
+                projection, // The columns to return
+                selection, // The columns for the WHERE clause
+                selectionArgs, // The values for the WHERE clause
+                null, // don't group the rows
+                null, // don't filter by row groups
+                null // The sort order
+        );
+        return c.getCount();
+    }
+    public int get_student_id(int reg_no,String title_name){
+        db=Attendance_db.getReadableDatabase();
+        String[] projection = {Contract.Entry_students._ID};
+
+        String selection = Contract.Entry_students.STUDENT_COLUMN_NAME_1 + "=? AND " +
+                Contract.Entry_students.STUDENT_COLUMN_NAME_2 + "=? AND " +
+                Contract.Entry_students.STUDENT_COLUMN_NAME_3 + "=?";
+
+        String[] selectionArgs = {reg_no+"",session.get_inst_id() + "", title_name + ""};
+
+        Cursor c = db.query(Contract.Entry_students.STUDENT_TABLE_NAME, // The table to query
+                projection, // The columns to return
+                selection, // The columns for the WHERE clause
+                selectionArgs, // The values for the WHERE clause
+                null, // don't group the rows
+                null, // don't filter by row groups
+                null // The sort order
+        );
+        int id=-999;
+        c.moveToFirst();
+        for(int i=0;i<c.getCount();i++){
+            id = c.getInt(0);
+            c.moveToNext();
+        }
+        return id;
+    }
+
+    // FOR TESTING PURPOSES
+    //********************
+    //********************
+    //********************
+    //********************
+    //********************
+    public void TEST_af(String spinner_selected_item,int inst_id) {
+        db = Attendance_db.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(Contract.Entry_attendance_frequency.COLUMN_NAME_1,inst_id);
+        values.put(Contract.Entry_attendance_frequency.COLUMN_NAME_2,spinner_selected_item);
+
+        try {
+            db.insertOrThrow(
+                    Contract.Entry_attendance_frequency.TABLE_NAME,
+                    null,
+                    values);
+            ToastMessage.toast_text = "af SUCCESS ENTRY.";
+        } catch (Exception e) {
+            e.printStackTrace();
+            ToastMessage.toast_text = "af SORRY!! ERROR IN INPUT!!."+e.getMessage();
+        }
+    }
+    public void TEST_ar() {
+        db = Attendance_db.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(Contract.Entry_absent_record.COLUMN_NAME_1, 1);
+        values.put(Contract.Entry_absent_record.COLUMN_NAME_2, 12);
+        values.put(Contract.Entry_absent_record.COLUMN_NAME_3, "comments");
+        try {
+            db.insertOrThrow(
+                    Contract.Entry_absent_record.TABLE_NAME,
+                    null,
+                    values);
+            ToastMessage.toast_text = "SUCCESS ENTRY.:)";
+        } catch (Exception e) {
+            e.printStackTrace();
+            ToastMessage.toast_text = "SORRY!! ERROR IN INPUT!!.:("+e.getMessage();
+        }
+    }
+
+    public String show_test_af() {
+        db = Attendance_db.getReadableDatabase();
+
+        String[] projection = {Contract.Entry_attendance_frequency._ID, Contract.Entry_attendance_frequency.COLUMN_NAME_1,
+                Contract.Entry_attendance_frequency.COLUMN_NAME_2,Contract.Entry_attendance_frequency.COLUMN_NAME_3};
+
+        Cursor c = db.query(Contract.Entry_attendance_frequency.TABLE_NAME, // The table to query
+                projection, // The columns to return
+                null, // The columns for the WHERE clause
+                null, // The values for the WHERE clause
+                null, // don't group the rows
+                null, // don't filter by row groups
+                null // The sort order
+        );
+        String x = "ATTENDANCE_FREQUENCY \n";
+        c.moveToFirst();
+
+        for (int i = 0; i < c.getCount(); i++) {
+
+            //x += " " + c.getString(0) + " " + c.getString(1) + " " + c.getString(2)  + "\n";
+            x += " " + c.getInt(0) + " " + c.getInt(1) + " " + c.getString(2) + " " + c.getString(3)  + "\n";
+            c.moveToNext();
+        }
+        return x;
+    }
+
+    public String show_test_ar() {
+        String x = "ABSENT RECORD \n";
+        try{
+            db = Attendance_db.getReadableDatabase();
+
+            String[] projection = {Contract.Entry_absent_record._ID, Contract.Entry_absent_record.COLUMN_NAME_1,
+                Contract.Entry_absent_record.COLUMN_NAME_2,Contract.Entry_absent_record.COLUMN_NAME_3};
+
+            Cursor c = db.query(Contract.Entry_absent_record.TABLE_NAME, // The table to query
+                projection, // The columns to return
+                null, // The columns for the WHERE clause
+                null, // The values for the WHERE clause
+                null, // don't group the rows
+                null, // don't filter by row groups
+                null // The sort order
+        );
+        c.moveToFirst();
+
+        for (int i = 0; i < c.getCount(); i++) {
+
+            x += " " + c.getInt(0) + " " + c.getInt(1) + " " + c.getInt(2)+ " " + c.getString(3)  + "\n";
+            c.moveToNext();
+        }
+        }
+        catch(Exception e){
+            x += e.getMessage().toString();
+        }
+        return x;
+    }
+
+    //*********************
+    //*********************
+    //*********************
+    //*********************
+    //*********************
+    // FOR TESTING PURPOSES
 
     public void add_individual(int reg_no, String students_name, String title_name) {
         db = Attendance_db.getWritableDatabase();
@@ -116,10 +383,41 @@ public class DatabaseWork {
                     values);
         } catch (Exception e) {
             e.printStackTrace();
-            ToastMessage.toast_text = "SORRY!! ERROR IN INPUT!!.";
+            ToastMessage.toast_text = "SORRY!! THIS REG IS ALREADY INSERTED!!.";
         }
     }
 
+    public void import_operation_add(ArrayList<Individual_info> std_info, String title_name) {
+        db = Attendance_db.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+
+        for (int i = 0; i < std_info.size(); i++) {
+            values.clear();
+            values.put(Contract.Entry_students.STUDENT_COLUMN_NAME_1, Integer.parseInt(std_info.get(i).getReg_no()));
+            values.put(Contract.Entry_students.STUDENT_COLUMN_NAME_2, session.get_inst_id());
+            values.put(Contract.Entry_students.STUDENT_COLUMN_NAME_3, title_name);
+            values.put(Contract.Entry_students.STUDENT_COLUMN_NAME_4, std_info.get(i).getName());
+
+            try {
+                int std_id = get_student_id(Integer.parseInt(std_info.get(i).getReg_no()),title_name);
+
+                long id = db.insertWithOnConflict(
+                        Contract.Entry_students.STUDENT_TABLE_NAME,
+                        null,
+                        values,
+                        db.CONFLICT_IGNORE);
+
+                if((int)id!=std_id)
+                     update_absent_record_if_exist((int)id,title_name);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                ToastMessage.toast_text = "SORRY!! INVALID INPUT!!.";
+            }
+
+        }
+    }
     public ArrayList<Individual_info> get_student_list(String title_name) {
         ArrayList<Individual_info> individual_info = new ArrayList<Individual_info>();
 
