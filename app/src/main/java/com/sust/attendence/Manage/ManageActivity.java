@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -41,9 +42,9 @@ import com.sust.attendence.Others.ToastMessage;
 import com.sust.attendence.R;
 import com.sust.attendence.Session.UserSessionManager;
 
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
-
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.FileReader;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -56,14 +57,14 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
     private Spinner_title_adapter spinner_adapter_custom;
     private Listview_individual_adapter listview_adapter_custom;
     private List<String> spinner_item;
-    private Button create_title_btn, add_individual_btn,save_btn,import_btn;
+    private Button create_title_btn, add_individual_btn,save_btn;
     private ToggleButton toggle_button;
     private EditText dialog_et_title, dialog_et_ind_reg_no, dialog_et_ind_name;
     private TextView dialog_et_ind_inst_name, dialog_et_ind_title_name;
     private String dialog_et_title_text, dialog_et_ind_name_text, spinner_selected_item, dialog_et_ind_reg_no_text;
     private int dialog_et_ind_reg_number;
     private UserSessionManager session;
-    private ListView student_list;
+    private ListView student_list,drawer_list;
     private SimpleCursorAdapter adapter;
     private ArrayAdapter<String> spinner_adapter;
     public static boolean pos[];
@@ -72,6 +73,7 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
     private DialogFragment df;
     String[] objects = {"asd", "fgh", "jkl"};
     Bundle bdl;
+    private static final int REQUEST_PICK_FILE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,7 +106,11 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
         add_individual_btn = (Button) findViewById(R.id.add_individual_btn);
         toggle_button = (ToggleButton) findViewById(R.id.toggleButton);
         save_btn = (Button) findViewById(R.id.save_btn);
-        import_btn = (Button) findViewById(R.id.import_btn);
+        drawer_list = (ListView) findViewById(R.id.left_drawer);
+
+        drawer_list.setAdapter(new ArrayAdapter<String>(this,R.layout.drawer_list_item,getResources().getStringArray(R.array.left_drawer)));
+
+        drawer_list.setOnItemClickListener(new DrawerItemClickListener());
 
         spinner_item = new ArrayList<String>();
         spinner_item = new DatabaseWork(this).get_title();
@@ -118,7 +124,6 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
         create_title_btn.setOnClickListener(this);
         add_individual_btn.setOnClickListener(this);
         save_btn.setOnClickListener(this);
-        import_btn.setOnClickListener(this);
 
         title_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -133,6 +138,42 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
             }
         });
 
+    }
+    private class DrawerItemClickListener implements ListView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            selectItem(position);
+        }
+    }
+
+    protected void selectItem(int position){
+
+        switch(position){
+            case 0:
+                if(!toggle_button.isChecked()){
+                    try {
+                        Intent intent = new Intent(this, FilePickerActivity.class);
+                        startActivityForResult(intent, REQUEST_PICK_FILE);
+                    }
+                    catch(Exception e){
+                        ToastMessage.show_toast(this,"Something goes wrong.");
+                    }
+                }
+                else{
+                    ToastMessage.show_toast(this,"You have to turn off the calling mode.");
+                }
+                break;
+            case 1:
+                break;
+
+            case 2:
+                session.logoutUser();
+                finish();
+                break;
+            case 3:
+                finish();
+                break;
+        }
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -263,50 +304,32 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
 
                 break;
 
-            case R.id.import_btn:
-                InputStream inputStream = null;
-                ByteArrayOutputStream outputStream=new ByteArrayOutputStream();
-                try {
-
-                    inputStream = getApplicationContext().getAssets().open("teSt.docx");
-
-                    int i = inputStream.read();
-                    while (i!=-1) {
-                        outputStream.write(i);
-                        i = inputStream.read();
-                    }
-                    inputStream.close();
-                    }
-                catch (Exception e){
-                    e.printStackTrace();
-                }
-
-                ToastMessage.show_toast(ManageActivity.this,"OK   :   "+outputStream);
-                break;
+//
+//
+//                InputStream inputStream = null;
+//                ByteArrayOutputStream outputStream=new ByteArrayOutputStream();
+//                try {
+//
+//                    inputStream = getApplicationContext().getAssets().open("teSt.docx");
+//
+//                    int i = inputStream.read();
+//                    while (i!=-1) {
+//                        outputStream.write(i);
+//                        i = inputStream.read();
+//                    }
+//                    inputStream.close();
+//                    }
+//                catch (Exception e){
+//                    e.printStackTrace();
+//                }
+//
+//                ToastMessage.show_toast(ManageActivity.this,"OK   :   "+outputStream);
+//                break;
 
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the others_menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.others_menu, menu);
-        return true;
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.exit:
-                finish();
-                break;
-            case R.id.logout:
-                session.logoutUser();
-                finish();
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
     @Override
     public void onDialogPositiveClick(android.support.v4.app.DialogFragment dialog, Bundle bdll) {
@@ -349,4 +372,48 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
         bdll.clear();
         bdl.clear();
     }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check which request we're responding to
+        if (requestCode == REQUEST_PICK_FILE) {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK) {
+                String str_path=data.getStringExtra("file_path");
+                import_operation(str_path);
+                ToastMessage.show_toast(this,str_path);
+
+            }
+        }
+    }
+
+    protected void import_operation(String path){
+        String line="",str="";
+        BufferedReader reader=null;
+        ArrayList<Individual_info> std_info = new ArrayList<Individual_info>();
+
+        try{
+            reader = new BufferedReader(new FileReader(path));
+
+            while((line = reader.readLine())!=null){
+
+                String[] cols =line.split(",");
+                std_info.add(new Individual_info(cols[0],cols[1]));
+            }
+            if(std_info.size()>0) {
+                new DatabaseWork(this).import_operation_add(std_info, spinner_selected_item);
+                show_student_list();
+                ToastMessage.show_toast(this, "Import Operattion Succcessful.");
+
+            }
+            else{
+                ToastMessage.show_toast(this, "FILE IS EMPTY!");
+            }
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            ToastMessage.show_toast(this,str+"PLEASE SELECT CSV OR TXT EXTENSION.");
+        }
+    }
+
 }
