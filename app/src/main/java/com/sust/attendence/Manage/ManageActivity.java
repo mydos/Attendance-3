@@ -1,29 +1,22 @@
 package com.sust.attendence.Manage;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Fragment;
-import android.content.Context;
-import android.content.DialogInterface;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
@@ -31,31 +24,37 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 import android.support.v4.app.DialogFragment;
 
+import com.sust.attendence.Adapter.Drawer_list_adapter;
 import com.sust.attendence.Adapter.Listview_individual_adapter;
 import com.sust.attendence.Adapter.Spinner_title_adapter;
-import com.sust.attendence.Call.CallActivity;
-import com.sust.attendence.Database.Contract;
 import com.sust.attendence.Database.DatabaseWork;
 import com.sust.attendence.Listener.DialogListener;
+import com.sust.attendence.Others.Absent_Record;
+import com.sust.attendence.Others.Drawer_item;
 import com.sust.attendence.Others.Individual_info;
 import com.sust.attendence.Others.ToastMessage;
 import com.sust.attendence.R;
 import com.sust.attendence.Session.UserSessionManager;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileReader;
-import java.io.InputStream;
+import java.io.FileWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
+
 
 public class ManageActivity extends FragmentActivity implements View.OnClickListener, DialogListener {
     private Spinner title_spinner;
     private Spinner_title_adapter spinner_adapter_custom;
     private Listview_individual_adapter listview_adapter_custom;
+    private Drawer_list_adapter drawer_adapter_custom;
     private List<String> spinner_item;
     private Button create_title_btn, add_individual_btn,save_btn;
     private ToggleButton toggle_button;
@@ -74,6 +73,8 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
     String[] objects = {"asd", "fgh", "jkl"};
     Bundle bdl;
     private static final int REQUEST_PICK_FILE = 1;
+    private String[] drawer_list_text={"IMPORT","EXPORT","LOGOUT","EXIT"};
+    private int[] drawer_list_image={R.drawable.ic_action_import_export,R.drawable.ic_action_import_export,R.drawable.ic_action_import_export,R.drawable.ic_action_import_export};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,9 +109,9 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
         save_btn = (Button) findViewById(R.id.save_btn);
         drawer_list = (ListView) findViewById(R.id.left_drawer);
 
-        drawer_list.setAdapter(new ArrayAdapter<String>(this,R.layout.drawer_list_item,getResources().getStringArray(R.array.left_drawer)));
+        setDrawer();
 
-        drawer_list.setOnItemClickListener(new DrawerItemClickListener());
+
 
         spinner_item = new ArrayList<String>();
         spinner_item = new DatabaseWork(this).get_title();
@@ -139,6 +140,23 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
         });
 
     }
+    protected void setDrawer(){
+
+        ArrayList<Drawer_item> item_list = new ArrayList<>();
+        for(int i=0;i<drawer_list_text.length;i++){
+            item_list.add(new Drawer_item(drawer_list_text[i],drawer_list_image[i]));
+        }
+
+        LayoutInflater inflater = getLayoutInflater();
+        ViewGroup header = (ViewGroup) inflater.inflate(R.layout.drawer_list_header, drawer_list, false);
+
+
+        drawer_adapter_custom = new Drawer_list_adapter(this,R.layout.drawer_list_item,item_list);
+//        drawer_list.addHeaderView(header,null,false);
+        drawer_list.setAdapter(drawer_adapter_custom);
+
+        drawer_list.setOnItemClickListener(new DrawerItemClickListener());
+    }
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -164,6 +182,36 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
                 }
                 break;
             case 1:
+                if(!toggle_button.isChecked()){
+                    try {
+                        export_operation();
+
+
+//                        String temp="";
+//
+//                        if(listview_adapter_custom.getCount()>0){
+//
+//                            for(int i=0;i<1;i++){
+//                                Map<String,Boolean> map1=listview_adapter_custom.getItem(i).getPair();
+//                                Map<String, Boolean> map = new TreeMap<>(map1);
+//                                for (String k : map.keySet()) {
+//                                    temp += k + " :  "+map.get(k).toString()  + "\n";
+//                                }
+//                                }
+//                            }
+
+
+                   ToastMessage.show_toast(ManageActivity.this,"DONE");
+
+//                        ToastMessage.show_toast(this,"done");
+                        }
+                    catch(Exception e){
+                        ToastMessage.show_toast(this,"Something goes wrong."+e.getMessage());
+                    }
+                }
+                else{
+                    ToastMessage.show_toast(this,"You have to turn off the calling mode.");
+                }
                 break;
 
             case 2:
@@ -175,6 +223,186 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
                 break;
         }
     }
+
+    protected void export_operation(){
+        File folder = new File(Environment.getExternalStorageDirectory()
+                + "/Attendance");
+
+        boolean var = false;
+        if (!folder.exists())
+            var = folder.mkdir();
+
+        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss");
+        Date date = new Date();
+        String file_name =spinner_selected_item+"-"+dateFormat.format(date);
+        final String filename = folder.toString() + "/"+file_name+".csv";
+
+        // show waiting screen
+        CharSequence contentTitle = getString(R.string.app_name);
+        final ProgressDialog progDailog = ProgressDialog.show(
+                ManageActivity.this, contentTitle, "Proccessing...",
+                true);//please wait
+
+
+        new Thread() {
+            public void run() {
+                try {
+
+                    FileWriter fw = new FileWriter(filename);
+
+
+                    fw.append("REG");
+                    fw.append(',');
+
+                    fw.append("NAME");
+                    fw.append(',');
+
+                    //workspace
+
+
+                   //setting timestamp to individual Info.
+                   Map<String,ArrayList<String>> map = new DatabaseWork(ManageActivity.this).getPerformanceRecord(spinner_selected_item);
+
+                   if(listview_adapter_custom.getCount()>0){
+                       for(String key : map.keySet()){
+                           for(int i=0;i<listview_adapter_custom.getCount();i++){
+                               ArrayList<String> absent_reg_no= new ArrayList<>();
+                               absent_reg_no = map.get(key);
+
+                               if(absent_reg_no.contains(listview_adapter_custom.getItem(i).getReg_no()))
+                                    listview_adapter_custom.getItem(i).setPair(key,Boolean.FALSE);
+                               else{
+                                    listview_adapter_custom.getItem(i).setPair(key,Boolean.TRUE);
+                               }
+
+                            }
+                        }
+                   }
+                    //writing to file
+
+
+                    String temp="";
+                    boolean f=true;
+                    int total=0;
+                    if(listview_adapter_custom.getCount()>0){
+                        Map<String,Boolean> map1;
+                        for(int i=0;i<listview_adapter_custom.getCount();i++){
+
+                            map1=listview_adapter_custom.getItem(i).getPair();
+                            Map<String, Boolean> treeMap = new TreeMap<>(map1);
+
+                            if(i!=0){
+                                fw.append(listview_adapter_custom.getItem(i).getReg_no());
+                                fw.append(',');
+
+                                fw.append(listview_adapter_custom.getItem(i).getName());
+                                fw.append(',');
+
+                            }
+                            for(String k: treeMap.keySet()){
+
+                                if(i==0 && f){
+                                    for(String j: treeMap.keySet()) {
+                                        fw.append(j);
+                                        fw.append(',');
+                                    }
+                                    total=new DatabaseWork(ManageActivity.this).total_class_taken(spinner_selected_item);
+                                    fw.append("TOTAL PRESENT ("+total+")");
+                                    fw.append(',');
+                                    fw.append('\n');
+
+                                    fw.append(listview_adapter_custom.getItem(i).getReg_no());
+                                    fw.append(',');
+
+                                    fw.append(listview_adapter_custom.getItem(i).getName());
+                                    fw.append(',');
+
+
+                                    f=false;
+                                }
+                                if(treeMap.get(k)==true){
+
+                                    fw.append('P');
+                                    fw.append(',');
+                                }else{
+
+                                    fw.append('A');
+                                    fw.append(',');
+                                }
+
+//                                temp+=k+" :  "+map.get(k).toString()+"  "+map.size()+"\n";
+                            }
+
+                            int std_id = new DatabaseWork(ManageActivity.this).get_student_id(Integer.parseInt(listview_adapter_custom.getItem(i).getReg_no()),spinner_selected_item);
+                            ArrayList<Absent_Record> list = new DatabaseWork(ManageActivity.this).get_absent_record(std_id,spinner_selected_item);
+                            int count_p=total- list.size();
+
+                            fw.append(count_p+"");
+                            fw.append(',');
+
+                            fw.append('\n');
+
+                        }
+                    }
+
+//
+//                    String temp=""+map.size();
+//
+//                    for (String k : map.keySet()) {
+//                        temp += k + "   " +(map.get(k)).size()+"  ";
+//
+//                        for (int i = 0; i < map.get(k).size(); i++) {
+//                            temp+=map.get(k).get(i);
+//
+//                        }
+//                        temp="\n";
+//                    }
+////                   ToastMessage.show_toast(ManageActivity.this,"wah");
+
+//                    fw.append(temp);
+//                    fw.append(',');
+
+
+
+//                    new DatabaseWork(ManageActivity.this).getPerformanceRecord(spinner_selected_item);
+//                    ToastMessage.show_toast(ManageActivity.this,ToastMessage.toast_text);
+//
+//                    if(listview_adapter_custom.getCount()>0){
+//                        for(int i=0;i<listview_adapter_custom.getCount();i++){
+//
+//                            listview_adapter_custom.getItem(i).setPair("",Boolean.TRUE);
+//                        }
+//                    }
+                    //workspace
+
+                    fw.append('\n');
+
+
+
+                    // fw.flush();
+                    fw.close();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+
+            }
+
+        }.start();
+
+        timerDelayRemoveDialog(1000,progDailog);
+    }
+
+    public void timerDelayRemoveDialog(long time, final Dialog d){
+        new Handler().postDelayed(new Runnable() {
+            public void run() {
+                d.dismiss();
+            }
+        }, time);
+    }
+
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     protected void show_student_list() {
@@ -390,6 +618,10 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
         String line="",str="";
         BufferedReader reader=null;
         ArrayList<Individual_info> std_info = new ArrayList<Individual_info>();
+        CharSequence contentTitle = getString(R.string.app_name);
+        final ProgressDialog progDailog = ProgressDialog.show(
+                ManageActivity.this, contentTitle, "Proccessing...",
+                true);//please wait
 
         try{
             reader = new BufferedReader(new FileReader(path));
@@ -402,16 +634,19 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
             if(std_info.size()>0) {
                 new DatabaseWork(this).import_operation_add(std_info, spinner_selected_item);
                 show_student_list();
+                timerDelayRemoveDialog(1000,progDailog);
                 ToastMessage.show_toast(this, "Import Operattion Succcessful.");
 
             }
             else{
+                progDailog.dismiss();
                 ToastMessage.show_toast(this, "FILE IS EMPTY!");
             }
         }
         catch(Exception e)
         {
             e.printStackTrace();
+            progDailog.dismiss();
             ToastMessage.show_toast(this,str+"PLEASE SELECT CSV OR TXT EXTENSION.");
         }
     }
