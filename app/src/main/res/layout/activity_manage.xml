@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <!-- The main content view -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -29,7 +35,7 @@
         android:layout_alignBaseline="@+id/title_tv"
         android:layout_alignBottom="@+id/title_tv"
         android:layout_alignParentRight="true"
-        android:text="CREATE" />
+        android:background="@drawable/ic_action_new" />
 
     <TextView
         android:id="@+id/individual_tv"
@@ -48,17 +54,20 @@
         android:layout_alignBaseline="@+id/individual_tv"
         android:layout_alignBottom="@+id/individual_tv"
         android:layout_toRightOf="@+id/individual_tv"
-        android:text="ADD"
+        android:background="@drawable/ic_action_new"
         android:textAppearance="?android:attr/textAppearanceSmall" />
+
 
     <ToggleButton
 
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New ToggleButton"
+        android:layout_width="80dp"
+        android:layout_height="25dp"
         android:id="@+id/toggleButton"
         android:layout_alignBaseline="@+id/add_individual_btn"
-        android:layout_alignParentRight="true" />
+        android:layout_alignParentRight="true"
+        android:textOn=""
+        android:textOff=""
+	    android:background="@drawable/toggle_selector" />
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -89,3 +98,15 @@
 
 
 </RelativeLayout>
+
+    <!-- The navigation drawer -->
+    <ListView android:id="@+id/left_drawer"
+        android:layout_width="200dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:choiceMode="singleChoice"
+        android:divider="@drawable/list_divider"
+        android:dividerHeight="1px"
+        android:background="@android:color/background_light"/>
+
+</android.support.v4.widget.DrawerLayout>
