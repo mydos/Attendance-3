@@ -189,6 +189,10 @@ public class CreateDialog extends DialogFragment {
                         // sign in the user ...
                         dialog_et_ind_reg_no_text = dialog_et_ind_reg_no.getText().toString().trim();
                         dialog_et_ind_name_text = dialog_et_ind_name.getText().toString().trim();
+
+                        bdl.putInt("reg_no",Integer.parseInt(dialog_et_ind_reg_no_text));
+
+
                         if (!dialog_et_ind_reg_no_text.equals("") && !dialog_et_ind_name_text.equals("")) {
                             ToastMessage.toast_text = "Individual added Successfully!!!";
                             dialog_et_ind_reg_number = Integer.parseInt(dialog_et_ind_reg_no_text);
@@ -204,7 +208,7 @@ public class CreateDialog extends DialogFragment {
         builder.setNegativeButton("CANCEL",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        mListener.onDialogPositiveClick(CreateDialog.this, bdl);
+                        mListener.onDialogNegativeClick(CreateDialog.this, bdl);
                     }
                 });
 

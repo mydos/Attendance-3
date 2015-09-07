@@ -36,24 +36,70 @@ public class Spinner_title_adapter extends ArrayAdapter<String>{
 
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
-        return getCustomView(position, convertView, parent);
+        LayoutInflater inflater;
+        TextView label;
+        Button btn;
+        final int pos = position;
+
+        if(convertView==null || !convertView.getTag().toString().equals("DROPDOWN")) {
+            inflater = LayoutInflater.from(context);
+            convertView = inflater.inflate(R.layout.spinner_row, parent, false);
+            convertView.setTag("DROPDOWN");
+
+        }
+        label = (TextView) convertView.findViewById(R.id.spinner_title_tv);
+        label.setText(title.get(position));
+
+        btn =(Button)convertView.findViewById(R.id.title_cross_button);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                delete_dialog(pos);
+            }
+        });
+
+        return convertView;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        return getCustomView(position, convertView, parent);
-    }
-    public View getCustomView(final int position, View row, ViewGroup parent){
-        if(row==null) {
-            LayoutInflater inflater = LayoutInflater.from(context);
-            row = inflater.inflate(R.layout.spinner_row, parent, false);
-        }
+        LayoutInflater inflater;
+        TextView label;
+        Button btn;
 
-        TextView label = (TextView) row.findViewById(R.id.spinner_title_tv);
+        if (convertView == null || !convertView.getTag().toString().equals("NON_DROPDOWN")) {
+            convertView = LayoutInflater.from(context).inflate(R.layout.
+                    spinner_row_title, parent, false);
+            convertView.setTag("NON_DROPDOWN");
+        }
+        label = (TextView) convertView.findViewById(R.id.spinner_title_tv);
         label.setText(title.get(position));
 
 
-        Button btn =(Button)row.findViewById(R.id.title_cross_button);
+
+
+        return convertView;
+
+     }
+    public View getCustomView(final int position, View row, ViewGroup parent){
+        TextView label;
+        Button btn;
+        LayoutInflater inflater;
+        if(row==null || !row.getTag().toString().equals("DROPDOWN")) {
+                inflater = LayoutInflater.from(context);
+                row = inflater.inflate(R.layout.spinner_row, parent, false);
+                row.setTag("DROPDOWN");
+
+        }
+
+        label = (TextView) row.findViewById(R.id.spinner_title_tv);
+        label.setText(title.get(position));
+
+
+        btn =(Button)row.findViewById(R.id.title_cross_button);
+        btn.setVisibility(View.VISIBLE);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

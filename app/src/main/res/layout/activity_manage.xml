@@ -19,6 +19,7 @@
         android:padding="10dp"
         android:text="TITLE : " />
 
+
     <Spinner
         android:id="@+id/title_spinner"
         android:layout_width="wrap_content"
@@ -32,8 +33,6 @@
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/title_tv"
-        android:layout_alignBottom="@+id/title_tv"
         android:layout_alignParentRight="true"
         android:background="@drawable/ic_action_new" />
 
@@ -54,17 +53,16 @@
         android:layout_alignBaseline="@+id/individual_tv"
         android:layout_alignBottom="@+id/individual_tv"
         android:layout_toRightOf="@+id/individual_tv"
-        android:background="@drawable/ic_action_new"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
+        android:background="@drawable/ic_action_new"/>
 
 
     <ToggleButton
 
-        android:layout_width="80dp"
-        android:layout_height="25dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:id="@+id/toggleButton"
         android:layout_alignBaseline="@+id/add_individual_btn"
-        android:layout_alignParentRight="true"
+        android:layout_toRightOf="@+id/add_individual_btn"
         android:textOn=""
         android:textOff=""
 	    android:background="@drawable/toggle_selector" />

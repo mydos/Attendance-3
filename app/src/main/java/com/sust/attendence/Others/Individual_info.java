@@ -6,14 +6,18 @@ package com.sust.attendence.Others;
 import com.sust.attendence.Manage.ManageActivity;
 
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Individual_info {
     private String reg_no;
     private String name;
+    private Map<String,Boolean> pair;
 
     public Individual_info(String reg_no, String name) {
         this.reg_no = reg_no;
         this.name = name;
+        this.pair=null;
     }
 
     public String getReg_no() {
@@ -40,4 +44,15 @@ public class Individual_info {
             int reg2 = Integer.parseInt(rhs.getReg_no());
             return reg1-reg2;
         }};
+
+    public void setPair(String timestamp,Boolean value){
+        if(pair==null){
+            pair=new HashMap<String,Boolean>();
+        }
+        Boolean v = new Boolean(value);
+        pair.put(timestamp,v);
+    }
+    public Map<String,Boolean> getPair(){
+        return pair;
+    }
 }

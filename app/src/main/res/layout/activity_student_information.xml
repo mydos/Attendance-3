@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/parent_std_info"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp">
+
+    <TextView
+        android:id="@+id/total_class_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="TOTAL OCCURRENCE : " />
+    <TextView
+        android:id="@+id/present_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/total_class_tv"
+        android:padding="10dp"
+        android:text="PRESENT  : " />
+    <TextView
+        android:id="@+id/absent_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/total_class_tv"
+        android:layout_toRightOf="@id/present_tv"
+        android:padding="10dp"
+        android:text="ABSENT : " />
+    <TextView
+        android:id="@+id/show_absent_details"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/present_tv"
+        android:padding="10dp"
+        android:text="DETAILS : "/>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/show_absent_details"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="50dp">
+
+        <ListView
+            android:id="@+id/absent_details_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:descendantFocusability="afterDescendants">
+
+        </ListView>
+    </RelativeLayout>
+</RelativeLayout>

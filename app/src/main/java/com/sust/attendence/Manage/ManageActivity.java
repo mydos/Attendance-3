@@ -74,7 +74,7 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
     Bundle bdl;
     private static final int REQUEST_PICK_FILE = 1;
     private String[] drawer_list_text={"IMPORT","EXPORT","LOGOUT","EXIT"};
-    private int[] drawer_list_image={R.drawable.ic_action_import_export,R.drawable.ic_action_import_export,R.drawable.ic_action_import_export,R.drawable.ic_action_import_export};
+    private int[] drawer_list_image={R.drawable.ic_action_import,R.drawable.ic_action_export,R.drawable.ic_action_logout,R.drawable.ic_action_cancel};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,8 +116,9 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
         spinner_item = new ArrayList<String>();
         spinner_item = new DatabaseWork(this).get_title();
 
-        spinner_adapter_custom = new Spinner_title_adapter(this, R.layout.spinner_row, spinner_item);
+        spinner_adapter_custom = new Spinner_title_adapter(this, android.R.layout.simple_spinner_item, spinner_item);
 
+//        spinner_adapter_custom.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
         title_spinner.setAdapter(spinner_adapter_custom);
 
 
@@ -152,7 +153,7 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
 
 
         drawer_adapter_custom = new Drawer_list_adapter(this,R.layout.drawer_list_item,item_list);
-//        drawer_list.addHeaderView(header,null,false);
+        drawer_list.addHeaderView(header,null,false);
         drawer_list.setAdapter(drawer_adapter_custom);
 
         drawer_list.setOnItemClickListener(new DrawerItemClickListener());
@@ -167,7 +168,7 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
     protected void selectItem(int position){
 
         switch(position){
-            case 0:
+            case 1:
                 if(!toggle_button.isChecked()){
                     try {
                         Intent intent = new Intent(this, FilePickerActivity.class);
@@ -181,7 +182,7 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
                     ToastMessage.show_toast(this,"You have to turn off the calling mode.");
                 }
                 break;
-            case 1:
+            case 2:
                 if(!toggle_button.isChecked()){
                     try {
                         export_operation();
@@ -214,11 +215,11 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
                 }
                 break;
 
-            case 2:
+            case 3:
                 session.logoutUser();
                 finish();
                 break;
-            case 3:
+            case 4:
                 finish();
                 break;
         }

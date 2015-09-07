@@ -1,10 +1,14 @@
 package com.sust.attendence.Database;
 
+import android.annotation.TargetApi;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
+import android.support.annotation.NonNull;
 
+import com.sust.attendence.Manage.ManageActivity;
 import com.sust.attendence.Others.Absent_Record;
 import com.sust.attendence.Others.Individual_info;
 import com.sust.attendence.Others.ToastMessage;
@@ -12,7 +16,14 @@ import com.sust.attendence.Session.UserSessionManager;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 /**
  * Created by Ikhtiar on 5/12/2015.
@@ -195,9 +206,26 @@ public class DatabaseWork {
         ToastMessage.show_toast(context,v);
 
     }
+    public boolean set_as_present(int id){
+        db = Attendance_db.getReadableDatabase();
+
+        String selection = Contract.Entry_absent_record._ID + "=? ";
+        String[] selectionArgs = {id+""};
+
+        int count = db.delete(
+                Contract.Entry_absent_record.TABLE_NAME,
+                selection,
+                selectionArgs
+        );
+        if (count > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     public ArrayList<Absent_Record> get_absent_record(int std_id,String title_name){
         db= Attendance_db.getReadableDatabase();
-        String query ="SELECT TIMESTAMP_PER_CALL,COMMENTS from ATTENDANCE_FREQUENCY as AF inner join ABSENT_RECORD as AR " +
+        String query ="SELECT TIMESTAMP_PER_CALL,COMMENTS,AR._ID from ATTENDANCE_FREQUENCY as AF inner join ABSENT_RECORD as AR " +
                 "where AR.ATTENDANCE_FREQUENCY_ID = AF._ID and TITLE_NAME = '"+title_name+"' and AR.STUDENT_ID = "+std_id+"";
         Cursor c;
         ArrayList<Absent_Record> list = new ArrayList<>();
@@ -206,7 +234,7 @@ public class DatabaseWork {
             c=db.rawQuery(query,null);
             c.moveToFirst();
             for(int i=0;i<c.getCount();i++){
-                list.add(new Absent_Record(Timestamp.valueOf(c.getString(0)),c.getString(1)));
+                list.add(new Absent_Record(Timestamp.valueOf(c.getString(0)),c.getString(1),c.getInt(2)));
                 c.moveToNext();
             }
             return list;
@@ -417,6 +445,66 @@ public class DatabaseWork {
             }
 
         }
+    }
+    @TargetApi(Build.VERSION_CODES.GINGERBREAD)
+    public Map<String,ArrayList<String>> getPerformanceRecord(String title_name){
+        db = Attendance_db.getReadableDatabase();
+
+        String query ="select timestamp_per_call,registration_no from ATTENDANCE_FREQUENCY as af left outer join " +
+                "(select attendance_frequency_id,name,registration_no from STUDENTS as s inner join ABSENT_RECORD as arr " +
+                "where s._id = arr.student_id) as ar on af._id=ar.attendance_frequency_id where " +
+                "instructor_id='"+session.get_inst_id()+"' and " +
+                "title_name='"+title_name+"' order by timestamp_per_call asc";
+        Cursor c;
+
+        Map<String,ArrayList<String>> map = new HashMap<>();
+        ArrayList<String> str= new ArrayList<>();
+        String temp="";
+        int x=0;
+        String s="";
+        String key,value;
+        try{
+            c=db.rawQuery(query,null);
+            c.moveToFirst();
+            for(int i=0;i<c.getCount();i++){
+
+              key=c.getString(0);
+              value=c.getString(1);
+
+                if(map.get(key)==null){
+                    map.put(key,new ArrayList<String>());
+                }
+                map.get(key).add(value);
+
+                c.moveToNext();
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            ToastMessage.toast_text="error"+e.getMessage();
+        }
+
+        Map<String, ArrayList<String>> treeMap = new TreeMap<>(map);
+
+//        temp="";
+//
+//        for (String k : treeMap.keySet()) {
+//            temp += k + "   " +(treeMap.get(k)).size()+"  ";
+//
+//            for (int i = 0; i < treeMap.get(k).size(); i++) {
+//                temp+=treeMap.get(k).get(i)+" : ";
+//            }
+//            temp+="\n";
+//        }
+
+//        for(Map.Entry<String, ArrayList<String>> alternateEntry : map.entrySet()) {
+//            temp+=alternateEntry.getKey() + " : " +
+//                    alternateEntry.getValue().toString()+"\n";
+//        }
+//        ToastMessage.toast_text=temp+"SIZE : "+map.size()+"   "+x;
+
+
+        return treeMap;
     }
     public ArrayList<Individual_info> get_student_list(String title_name) {
         ArrayList<Individual_info> individual_info = new ArrayList<Individual_info>();
