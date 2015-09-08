@@ -154,6 +154,8 @@ public class DatabaseWork {
         return id;
     }
 
+
+
     public long update_absent_record(int std_id,long freq_id){
         db = Attendance_db.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -677,5 +679,25 @@ public class DatabaseWork {
         ToastMessage.toast_text = x + "    c    =  " + c;
         ToastMessage.show_toast(context, ToastMessage.toast_text);
         return x;
+    }
+    public void update_coments(int id,String comments){
+        db=Attendance_db.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(Contract.Entry_absent_record.COLUMN_NAME_3, comments);
+
+        String Selection=Contract.Entry_absent_record._ID +" = ? ";
+        String[] SelectionArgs={id+""};
+
+        try {
+            db.update(
+                    Contract.Entry_absent_record.TABLE_NAME,
+                    values,
+                    Selection,
+                    SelectionArgs);
+        } catch (Exception e) {
+            e.printStackTrace();
+            ToastMessage.toast_text = "SORRY!! ERROR UPDATING DATABASE!!.";
+        }
     }
 }

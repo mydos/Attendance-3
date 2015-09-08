@@ -428,6 +428,8 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
                 bdl.putString("title_name",spinner_selected_item);
                 String reg_no = ((TextView)view.findViewById(R.id.display_reg)).getText().toString().trim();
                 bdl.putString("reg_no",reg_no);
+                String name = ((TextView)view.findViewById(R.id.display_name)).getText().toString().trim();
+                bdl.putString("name",name);
                 call_intent.putExtras(bdl);
                 startActivity(call_intent);
                 ToastMessage.show_toast(ManageActivity.this,"Yes");
