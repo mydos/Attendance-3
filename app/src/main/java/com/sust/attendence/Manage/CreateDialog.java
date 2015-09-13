@@ -1,9 +1,11 @@
 package com.sust.attendence.Manage;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
+import android.os.Build;
 import android.support.v4.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -26,7 +28,7 @@ import com.sust.attendence.Session.UserSessionManager;
 public class CreateDialog extends DialogFragment {
 
     private EditText dialog_et_title, dialog_et_ind_reg_no, dialog_et_ind_name, login_email_et, login_password_et;
-    private TextView dialog_et_ind_inst_name, dialog_et_ind_title_name;
+//    private TextView dialog_et_ind_inst_name, dialog_et_ind_title_name;
     private String dialog_et_title_text, dialog_et_ind_reg_no_text, dialog_et_ind_name_text, login_email_et_text, login_password_et_text;
     private int dialog_et_ind_reg_number,total_ind,present_ind,absent_ind;
     private Bundle bdl;
@@ -72,6 +74,7 @@ public class CreateDialog extends DialogFragment {
 
     }
 
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     protected void initialize() {
         bdl = getArguments();
         which_dialog = bdl.getString("dialog_name");
@@ -176,11 +179,11 @@ public class CreateDialog extends DialogFragment {
         // Add action buttons
         dialog_et_ind_reg_no = (EditText) layout.findViewById(R.id.individual_registration_no_et);
         dialog_et_ind_name = (EditText) layout.findViewById(R.id.individual_name_et);
-        dialog_et_ind_inst_name = (TextView) layout.findViewById(R.id.inst_name_tv);
-        dialog_et_ind_title_name = (TextView) layout.findViewById(R.id.course_title_tv);
+//        dialog_et_ind_inst_name = (TextView) layout.findViewById(R.id.inst_name_tv);
+//        dialog_et_ind_title_name = (TextView) layout.findViewById(R.id.course_title_tv);
 
-        dialog_et_ind_inst_name.setText("INSTRUCTOR NAME : " + session.get_name());
-        dialog_et_ind_title_name.setText("TITLE NAME : " + bdl.getString("spinner_selected_item"));
+//        dialog_et_ind_inst_name.setText("INSTRUCTOR NAME : " + session.get_name());
+//        dialog_et_ind_title_name.setText("TITLE NAME : " + bdl.getString("spinner_selected_item"));
 
         builder.setPositiveButton("SUBMIT",
                 new DialogInterface.OnClickListener() {
@@ -190,8 +193,9 @@ public class CreateDialog extends DialogFragment {
                         dialog_et_ind_reg_no_text = dialog_et_ind_reg_no.getText().toString().trim();
                         dialog_et_ind_name_text = dialog_et_ind_name.getText().toString().trim();
 
-                        bdl.putInt("reg_no",Integer.parseInt(dialog_et_ind_reg_no_text));
-
+                        if(!dialog_et_ind_reg_no_text.equals("")) {
+                            bdl.putInt("reg_no", Integer.parseInt(dialog_et_ind_reg_no_text));
+                        }
 
                         if (!dialog_et_ind_reg_no_text.equals("") && !dialog_et_ind_name_text.equals("")) {
                             ToastMessage.toast_text = "Individual added Successfully!!!";

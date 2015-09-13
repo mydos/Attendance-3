@@ -86,7 +86,7 @@ public class Listview_individual_adapter extends ArrayAdapter<Individual_info> {
 
         if(ManageActivity.pos!=null) {
             if (ManageActivity.pos[position] == true)
-                row.setBackgroundColor(Color.RED);
+                row.setBackgroundColor(Color.parseColor("#fea6a6"));
             else {
                 row.setBackgroundColor(Color.TRANSPARENT);
 

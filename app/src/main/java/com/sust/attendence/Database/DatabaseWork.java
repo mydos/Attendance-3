@@ -413,7 +413,7 @@ public class DatabaseWork {
                     values);
         } catch (Exception e) {
             e.printStackTrace();
-            ToastMessage.toast_text = "SORRY!! THIS REG IS ALREADY INSERTED!!.";
+            ToastMessage.toast_text = "PLEASE , INSERT VALID DATA !";
         }
     }
 
@@ -692,6 +692,47 @@ public class DatabaseWork {
         try {
             db.update(
                     Contract.Entry_absent_record.TABLE_NAME,
+                    values,
+                    Selection,
+                    SelectionArgs);
+        } catch (Exception e) {
+            e.printStackTrace();
+            ToastMessage.toast_text = "SORRY!! ERROR UPDATING DATABASE!!.";
+        }
+    }
+    public void update_student_name(int std_id,String name){
+        db=Attendance_db.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(Contract.Entry_students.STUDENT_COLUMN_NAME_4, name);
+
+        String Selection=Contract.Entry_students._ID +" = ? ";
+        String[] SelectionArgs={std_id+""};
+
+        try {
+            db.update(
+                    Contract.Entry_students.STUDENT_TABLE_NAME,
+                    values,
+                    Selection,
+                    SelectionArgs);
+        } catch (Exception e) {
+            e.printStackTrace();
+            ToastMessage.toast_text = "SORRY!! ERROR UPDATING DATABASE!!.";
+        }
+    }
+
+    public void update_student_id(int std_id,String reg_no){
+        db=Attendance_db.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(Contract.Entry_students.STUDENT_COLUMN_NAME_1, reg_no);
+
+        String Selection=Contract.Entry_students._ID +" = ? ";
+        String[] SelectionArgs={std_id+""};
+
+        try {
+            db.update(
+                    Contract.Entry_students.STUDENT_TABLE_NAME,
                     values,
                     Selection,
                     SelectionArgs);

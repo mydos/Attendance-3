@@ -4,15 +4,13 @@
     android:layout_height="wrap_content"
     android:orientation="vertical" >
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:background="#FFFFBB33"
-        android:contentDescription="@string/app_name"
-        android:scaleType="center"
-        android:src="@drawable/ic_launcher" />
-
-
+    <!--<ImageView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="64dp"-->
+        <!--android:background="#FFFFBB33"-->
+        <!--android:contentDescription="@string/app_name"-->
+        <!--android:scaleType="center"-->
+        <!--android:src="@drawable/ic_launcher" />-->
 
     <EditText
         android:id="@+id/login_email_feild_et"
@@ -24,7 +22,9 @@
         android:layout_marginTop="4dp"
         android:fontFamily="sans-serif"
         android:hint="Email"
-        android:inputType="textEmailAddress" />
+        android:inputType="textEmailAddress"
+        android:textColor="#0f8f8f"
+        android:background="@android:color/transparent"/>
 
     <EditText
         android:id="@+id/login_password_feild_et"
@@ -36,6 +36,8 @@
         android:layout_marginTop="4dp"
         android:fontFamily="sans-serif"
         android:hint="password"
-        android:inputType="textPassword" />
+        android:inputType="textPassword"
+        android:textColor="#0f8f8f"
+        android:background="@android:color/transparent"/>
 
 </LinearLayout>

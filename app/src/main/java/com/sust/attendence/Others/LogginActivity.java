@@ -27,6 +27,7 @@ import com.sust.attendence.Database.DatabaseWork;
 import com.sust.attendence.Listener.DialogListener;
 import com.sust.attendence.Listener.addCustomTextChangedListener;
 import com.sust.attendence.Manage.CreateDialog;
+import com.sust.attendence.Manage.ManageActivity;
 import com.sust.attendence.R;
 
 public class LogginActivity extends FragmentActivity implements OnClickListener,DialogListener {
@@ -47,11 +48,11 @@ public class LogginActivity extends FragmentActivity implements OnClickListener,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loggin);
-
+        Utility.setupUI(findViewById(R.id.parent_login_activity),this);
         initialize();
         login_btn.setOnClickListener(this);
         register_btn.setOnClickListener(this);
-
+        new DatabaseWork(this).delete_individual("","cse331");
     }
 
     protected void initialize() {
@@ -72,9 +73,9 @@ public class LogginActivity extends FragmentActivity implements OnClickListener,
         validation_map = new HashMap<String, Boolean>();
 
 //        test for db work
-        String x = new DatabaseWork(context).show();
-        TextView test_tv = (TextView) findViewById(R.id.test_tv);
-        test_tv.setText(x);
+//        String x = new DatabaseWork(context).show();
+//        TextView test_tv = (TextView) findViewById(R.id.test_tv);
+//        test_tv.setText(x);
 
     }
 
@@ -140,7 +141,7 @@ public class LogginActivity extends FragmentActivity implements OnClickListener,
     @Override
     public void onDialogPositiveClick(DialogFragment dialog, Bundle bdll) {
         if(bdll.getBoolean("login_successful")) {
-            Intent manu_intent = new Intent(LogginActivity.this, MenuActivity.class);
+            Intent manu_intent = new Intent(LogginActivity.this, ManageActivity.class);
             startActivity(manu_intent);
             finish();
         }

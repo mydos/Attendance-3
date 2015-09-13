@@ -169,6 +169,10 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
 
         switch(position){
             case 1:
+                if(spinner_selected_item==null){
+                    ToastMessage.show_toast(this,"You have to create title.");
+                    break;
+                }
                 if(!toggle_button.isChecked()){
                     try {
                         Intent intent = new Intent(this, FilePickerActivity.class);
@@ -183,6 +187,14 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
                 }
                 break;
             case 2:
+                if(spinner_selected_item==null){
+                    ToastMessage.show_toast(this,"You have to create title.");
+                    break;
+                }
+                if(listview_adapter_custom.isEmpty()){
+                    ToastMessage.show_toast(this,"You have to add Individual.");
+                    break;
+                }
                 if(!toggle_button.isChecked()){
                     try {
                         export_operation();
@@ -465,7 +477,7 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
                         reg_no[position]=0;
                         --total;
                     } else {
-                        view.setBackgroundColor(Color.RED);
+                        view.setBackgroundColor(Color.parseColor("#fea6a6"));
                         pos[position] = true;
                         reg_no[position]=Integer.parseInt(((TextView)view.findViewById(R.id.display_reg)).getText().toString());
                         ++total;
@@ -513,7 +525,12 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
                 }
                 break;
             case R.id.toggleButton:
-                   manage_listitem();
+                if(listview_adapter_custom!=null) {
+                    manage_listitem();
+                }else{
+                    toggle_button.setChecked(false);
+                    ToastMessage.show_toast(ManageActivity.this,"You have to create title and add individual to perform call.");
+                }
                 break;
 
             case R.id.save_btn:
@@ -615,6 +632,12 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
 
             }
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        show_student_list();
     }
 
     protected void import_operation(String path){

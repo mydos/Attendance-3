@@ -5,72 +5,107 @@
     android:layout_height="match_parent"
     android:padding="10dp">
 
-    <TextView
-        android:id="@+id/name_tv"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginRight="20dp"
-        android:layout_marginLeft="20dp"
-        android:textSize="20sp"
-        android:padding="10dp"
-        android:text="NAME : " />
-    <!--<EditText-->
-        <!--android:id="@+id/name_edit"-->
-        <!--android:padding="10dp"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_toRightOf="@id/name_tv"-->
-        <!--android:imeOptions="actionDone"-->
-        <!--android:cursorVisible="false"-->
-        <!--android:background="@android:color/transparent"-->
-        <!--android:textColor="#0f8f8f"-->
-        <!--android:textSize="20sp"-->
-        <!--android:text=" N/A "/>-->
-    <TextView
-        android:id="@+id/reg_no_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/name_tv"
-        android:layout_marginRight="20dp"
-        android:layout_marginLeft="20dp"
-        android:textSize="20sp"
-        android:padding="5dp"
-        android:text="ID : " />
+        android:id="@+id/group1">
+        <TextView
+            android:id="@+id/name_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="0dp"
+            android:layout_marginLeft="20dp"
+            android:textSize="20sp"
+            android:padding="10dp"
+            android:text="NAME : " />
+        <EditText
+            android:id="@+id/name_edit"
+            android:padding="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/name_tv"
+            android:imeOptions="actionDone"
+            android:cursorVisible="false"
+            android:layout_alignBaseline="@id/name_tv"
+            android:background="@android:color/transparent"
+            android:textColor="#0f8f8f"
+            android:textSize="20sp"
+            android:maxLength="40"
+            android:text=" N/A "/>
 
-    <TextView
-        android:id="@+id/total_class_tv"
-        android:layout_width="wrap_content"
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/reg_no_tv"
-        android:padding="3dp"
-        android:text="TOTAL OCCURRENCE : " />
-    <TextView
-        android:id="@+id/present_tv"
-        android:layout_width="wrap_content"
+        android:id="@+id/group2"
+        android:layout_below="@id/group1">
+
+        <TextView
+            android:id="@+id/reg_no_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="0dp"
+            android:layout_marginLeft="20dp"
+            android:textSize="20sp"
+            android:padding="5dp"
+            android:text="ID : " />
+        <EditText
+            android:id="@+id/reg_no_edit"
+            android:padding="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/reg_no_tv"
+            android:imeOptions="actionDone"
+            android:cursorVisible="false"
+            android:layout_alignBaseline="@id/reg_no_tv"
+            android:background="@android:color/transparent"
+            android:textColor="#0f8f8f"
+            android:textSize="20sp"
+            android:maxLength="10"
+            android:inputType="number"
+            android:text=" N/A "/>
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/total_class_tv"
-        android:padding="3dp"
-        android:text="PRESENT  : " />
-    <TextView
-        android:id="@+id/absent_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/total_class_tv"
-        android:layout_toRightOf="@id/present_tv"
-        android:padding="3dp"
-        android:text="ABSENT : " />
-    <TextView
-        android:id="@+id/show_absent_details"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/present_tv"
-        android:padding="3dp"
-        android:text="DETAILS : "/>
+        android:id="@+id/group3"
+        android:layout_below="@id/group2">
+
+        <TextView
+            android:id="@+id/total_class_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="3dp"
+            android:text="TOTAL OCCURRENCE : " />
+        <TextView
+            android:id="@+id/present_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/total_class_tv"
+            android:padding="3dp"
+            android:text="PRESENT  : " />
+        <TextView
+            android:id="@+id/absent_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/total_class_tv"
+            android:layout_toRightOf="@id/present_tv"
+            android:padding="3dp"
+            android:text="ABSENT : " />
+        <TextView
+            android:id="@+id/show_absent_details"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/present_tv"
+            android:padding="3dp"
+            android:text="DETAILS : "/>
+    </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/show_absent_details"
+        android:layout_below="@id/group3"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginTop="20dp"

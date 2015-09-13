@@ -1,12 +1,10 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true"
-    android:scrollbars="vertical">
-
-    <RelativeLayout
+<RelativeLayout
+        android:id="@+id/parent_login_activity"
+        xmlns:android = "http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:focusableInTouchMode="true">
         <EditText
             android:id="@+id/register_name_field_et"
             android:layout_width="wrap_content"
@@ -15,6 +13,8 @@
             android:layout_centerHorizontal="true"
             android:ems="10"
             android:hint="NAME"
+            android:textColorHint="#8ac8c8"
+            android:textColor="#0f8f8f"
             android:inputType="text"
             android:maxLines="1" />
 
@@ -26,6 +26,8 @@
             android:layout_centerHorizontal="true"
             android:ems="10"
             android:hint="EMAIL"
+            android:textColorHint="#8ac8c8"
+            android:textColor="#0f8f8f"
             android:inputType="textEmailAddress"
             android:maxLines="1"></EditText>
 
@@ -37,6 +39,8 @@
             android:layout_centerHorizontal="true"
             android:ems="10"
             android:hint="PASSWORD"
+            android:textColorHint="#8ac8c8"
+            android:textColor="#0f8f8f"
             android:inputType="textPassword"
             android:maxLines="1"></EditText>
 
@@ -46,7 +50,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/register_password_field_et"
             android:layout_centerHorizontal="true"
-            android:text="REGISTER" />
+            android:text="REGISTER"
+            android:textColor="#0f8f8f" />
 
         <Button
             android:id="@+id/login_btn"
@@ -57,17 +62,16 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="5dp"
             android:text="LOG IN"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            android:textColor="#0f8f8f" />
 
-        <TextView
-            android:id="@+id/test_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/login_btn"
-            android:layout_centerHorizontal="true"
-            android:text="null"
-            android:layout_margin="10dp"/>
+        <!--<TextView-->
+            <!--android:id="@+id/test_tv"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_below="@+id/login_btn"-->
+            <!--android:layout_centerHorizontal="true"-->
+            <!--android:text="null"-->
+            <!--android:layout_margin="10dp"/>-->
 
-    </RelativeLayout>
-
-</ScrollView>
+</RelativeLayout>

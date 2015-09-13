@@ -36,10 +36,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String SQL_CREATE_ENTRIES_STUDENT ="CREATE TABLE "
             + Contract.Entry_students.STUDENT_TABLE_NAME + " (" + Contract.Entry_students._ID + " INTEGER PRIMARY KEY " + COMMA_SEP
-            + Contract.Entry_students.STUDENT_COLUMN_NAME_1 + INT_TYPE + COMMA_SEP
+            + Contract.Entry_students.STUDENT_COLUMN_NAME_1 + INT_TYPE +" NOT NULL "+ COMMA_SEP
             + Contract.Entry_students.STUDENT_COLUMN_NAME_2 + INT_TYPE + COMMA_SEP
             + Contract.Entry_students.STUDENT_COLUMN_NAME_3 + TEXT_TYPE + COMMA_SEP
-            + Contract.Entry_students.STUDENT_COLUMN_NAME_4 + TEXT_TYPE + COMMA_SEP
+            + Contract.Entry_students.STUDENT_COLUMN_NAME_4 + TEXT_TYPE + "NOT NULL " + COMMA_SEP
             + FOREIGN_KEY_CONSTRAINT + " ( " + Contract.Entry_students.STUDENT_COLUMN_NAME_2 + COMMA_SEP
             + Contract.Entry_students.STUDENT_COLUMN_NAME_3 + " ) " + " REFERENCES "
             + Contract.Entry_title.TITLE_TABLE_NAME + " ( " + Contract.Entry_title.TITLE_COLUMN_NAME_1 + COMMA_SEP
