@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/extra_field_list_view_item"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:baselineAligned="false"
+    android:orientation="horizontal">
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_weight="1"
+        android:padding="10dp">
+
+
+        <TextView
+            android:id="@+id/display_field_name"
+            android:padding="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="FIELD NAME : "/>
+
+        <EditText
+            android:id="@+id/display_name_edt"
+            android:padding="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/display_field_name"
+            android:layout_alignBaseline="@id/display_field_name"
+            android:imeOptions="actionDone"
+            android:cursorVisible="false"
+            android:background="@android:color/transparent"
+            android:textColor="#0f8f8f"
+            android:text=" N/A "/>
+
+        <TextView
+            android:id="@+id/display_field_value"
+            android:padding="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/display_field_name"
+            android:text="FIELD VALUE : "/>
+
+
+        <EditText
+            android:id="@+id/display_value_edt"
+            android:padding="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/display_field_name"
+            android:layout_toRightOf="@id/display_field_value"
+            android:layout_alignBaseline="@id/display_field_value"
+            android:imeOptions="actionDone"
+            android:cursorVisible="false"
+            android:background="@android:color/transparent"
+            android:textColor="#0f8f8f"
+            android:text=" N/A "/>
+
+    </RelativeLayout>
+
+</LinearLayout>

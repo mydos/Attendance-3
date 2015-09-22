@@ -68,11 +68,48 @@ public class CreateDialog extends DialogFragment {
                 return login_dialog();
             case "save_roll_call":
                 return save_roll_call();
+            case "create_field":
+                return create_field();
             default:
                 return appear();
         }
 
     }
+
+    protected Dialog create_field() {
+        inflater = activity.getLayoutInflater();
+        layout = inflater.inflate(R.layout.custom_dialog_create_title, null);
+        builder.setView(layout);
+
+        dialog_et_title = (EditText) layout.findViewById(R.id.create_title_dialog_et);
+        dialog_et_title.setHint("Field Name");
+
+        builder.setPositiveButton("CREATE",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+
+                        dialog_et_title_text = dialog_et_title.getText().toString().trim();
+
+                        bdl.putString("dialog_et_title_text", dialog_et_title_text);
+
+
+
+                        mListener.onDialogPositiveClick(CreateDialog.this, bdl);
+                        bdl.clear();
+                    }
+                });
+        builder.setNegativeButton("CANCEL",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        mListener.onDialogNegativeClick(CreateDialog.this, bdl);
+                        bdl.clear();
+                    }
+                });
+
+        return builder.create();
+    }
+
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     protected void initialize() {

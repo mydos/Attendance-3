@@ -16,6 +16,27 @@
         <dex dex="E:\Android\Workspace\AndroidStudioProjects\Attendance\app\build\intermediates\pre-dexed\debug\internal_impl-21.0.3-c9b7a84b377ef4257bbfe17fce829cc59c6a5eba.jar" />
     </item>
     <item
+        jar="E:\Android\Workspace\StudioWorkspace\Attendance\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.0.1\libs\internal_impl-23.0.1.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="aa92916125166649d8ad4ba3940c3dd7515596d3">
+        <dex dex="E:\Android\Workspace\StudioWorkspace\Attendance\app\build\intermediates\pre-dexed\debug\internal_impl-23.0.1-24b9f2d2cf1c468d27b49591ee31949202a24e46.jar" />
+    </item>
+    <item
+        jar="E:\Android\Workspace\StudioWorkspace\Attendance\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.0.1\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="c31e21b53ff2f74664e498248d01453a32e32d48">
+        <dex dex="E:\Android\Workspace\StudioWorkspace\Attendance\app\build\intermediates\pre-dexed\debug\classes-6a0013be3e7fa1a7ee650e10850a56c4b831584e.jar" />
+    </item>
+    <item
+        jar="E:\Android\Workspace\StudioWorkspace\Attendance\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\23.0.1\classes.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="d86429b0f0b3f3cafbeb78dda1b9d89119ccb05d">
+        <dex dex="E:\Android\Workspace\StudioWorkspace\Attendance\app\build\intermediates\pre-dexed\debug\classes-1e497be6adba1c36576a58409f8471afe0d125a2.jar" />
+    </item>
+    <item
         jar="E:\Android\Development\sdk\extras\android\m2repository\com\android\support\support-annotations\21.0.3\support-annotations-21.0.3.jar"
         jumboMode="false"
         revision="21.1.2"
@@ -23,32 +44,18 @@
         <dex dex="E:\Android\Workspace\AndroidStudioProjects\Attendance\app\build\intermediates\pre-dexed\debug\support-annotations-21.0.3-2a5d9b280ee13228c536e7d0469f838019036e91.jar" />
     </item>
     <item
-        jar="E:\Android\Workspace\StudioWorkspace\Attendance\app\build\intermediates\exploded-aar\com.android.support\support-v4\21.0.3\classes.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="2c91c949a45a21cdecf26e03951e46c7beec9ad8">
-        <dex dex="E:\Android\Workspace\StudioWorkspace\Attendance\app\build\intermediates\pre-dexed\debug\classes-795a439bbc499cb750fefc7fd1172ff9c43b5b64.jar" />
-    </item>
-    <item
-        jar="E:\Android\Workspace\StudioWorkspace\Attendance\app\build\intermediates\exploded-aar\com.android.support\support-v4\21.0.3\libs\internal_impl-21.0.3.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="01ec05bfbafcc07646ba813000bf2ef11742dd03">
-        <dex dex="E:\Android\Workspace\StudioWorkspace\Attendance\app\build\intermediates\pre-dexed\debug\internal_impl-21.0.3-4dbc5aa3ccdb1a158306c1e62459c5e43d649389.jar" />
-    </item>
-    <item
-        jar="E:\Android\Workspace\StudioWorkspace\Attendance\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\21.0.3\classes.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="81d42bf983a8741f4888a6e333e454e4a5e0eeb7">
-        <dex dex="E:\Android\Workspace\StudioWorkspace\Attendance\app\build\intermediates\pre-dexed\debug\classes-30ee2ae0bb5bfede23ec0d1bf8ce9aab5e4d0618.jar" />
-    </item>
-    <item
         jar="E:\Android\Workspace\AndroidStudioProjects\Attendance\app\build\intermediates\exploded-aar\com.android.support\support-v4\21.0.3\classes.jar"
         jumboMode="false"
         revision="21.1.2"
         sha1="2c91c949a45a21cdecf26e03951e46c7beec9ad8">
         <dex dex="E:\Android\Workspace\AndroidStudioProjects\Attendance\app\build\intermediates\pre-dexed\debug\classes-f24ccbc4d57a03a26a1cdabd0f1845375dc5b294.jar" />
+    </item>
+    <item
+        jar="E:\Android\Development\sdk\extras\android\m2repository\com\android\support\support-annotations\23.0.1\support-annotations-23.0.1.jar"
+        jumboMode="false"
+        revision="23.0.1"
+        sha1="1fce89a6428c51467090d7f424e4c9c3dbd55f7e">
+        <dex dex="E:\Android\Workspace\StudioWorkspace\Attendance\app\build\intermediates\pre-dexed\debug\support-annotations-23.0.1-8e0751ee54a1dd8494f260c4a55965e3d066defe.jar" />
     </item>
 
 </items>

@@ -41,4 +41,11 @@ public class Contract {
         public  static  final String COLUMN_NAME_2 = "ATTENDANCE_FREQUENCY_ID";
         public  static  final String COLUMN_NAME_3 = "COMMENTS";
     }
+
+    public static abstract class Entry_extra_field implements BaseColumns {
+        public  static  final String TABLE_NAME = "EXTRA_FIELD";
+        public  static  final String COLUMN_NAME_1 = "STUDENT_ID";
+        public  static  final String COLUMN_NAME_2 = "FIELD_NAME";
+        public  static  final String COLUMN_NAME_3 = "FIELD_VALUE";
+    }
 }

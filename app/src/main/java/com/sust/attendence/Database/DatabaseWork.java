@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 
 import com.sust.attendence.Manage.ManageActivity;
 import com.sust.attendence.Others.Absent_Record;
+import com.sust.attendence.Others.Extra_Field;
 import com.sust.attendence.Others.Individual_info;
 import com.sust.attendence.Others.ToastMessage;
 import com.sust.attendence.Session.UserSessionManager;
@@ -73,6 +74,79 @@ public class DatabaseWork {
         return c.getCount() > 0 ? true : false;
     }
 
+    public ArrayList<Extra_Field> getField(int std_id){
+        db=Attendance_db.getReadableDatabase();
+        ArrayList<Extra_Field> extraFields = new ArrayList<>();
+        String[] projection = {Contract.Entry_extra_field._ID,
+                Contract.Entry_extra_field.COLUMN_NAME_2,Contract.Entry_extra_field.COLUMN_NAME_3};
+
+        String selection = Contract.Entry_extra_field.COLUMN_NAME_1 + "=? ";
+
+        String[] selectionArgs = {std_id+""};
+
+        Cursor c = db.query(Contract.Entry_extra_field.TABLE_NAME, // The table to query
+                projection, // The columns to return
+                selection, // The columns for the WHERE clause
+                selectionArgs, // The values for the WHERE clause
+                null, // don't group the rows
+                null, // don't filter by row groups
+                null // The sort order
+        );
+        c.moveToFirst();
+
+        for(int i=0;i<c.getCount();i++){
+            extraFields.add(new Extra_Field(Integer.parseInt(c.getString(0)),c.getString(1),c.getString(2)));
+            c.moveToNext();
+        }
+        return extraFields;
+    }
+    public long create_field_for_all(String title_name,String field_name){
+        db = Attendance_db.getWritableDatabase();
+
+        String[] projection = {Contract.Entry_students._ID};
+
+        String selection = Contract.Entry_students.STUDENT_COLUMN_NAME_2 + "=? AND " +
+                Contract.Entry_students.STUDENT_COLUMN_NAME_3 + "=?";
+
+        String[] selectionArgs = {session.get_inst_id() + "", title_name + ""};
+
+        Cursor c = db.query(Contract.Entry_students.STUDENT_TABLE_NAME, // The table to query
+                projection, // The columns to return
+                selection, // The columns for the WHERE clause
+                selectionArgs, // The values for the WHERE clause
+                null, // don't group the rows
+                null, // don't filter by row groups
+                null // The sort order
+        );
+
+        c.moveToFirst();
+        long x=-1;
+
+        for(int i=0;i<c.getCount();i++){
+            x = create_field(Integer.parseInt(c.getString(0)), field_name);
+            c.moveToNext();
+        }
+
+        return x;
+    }
+    public long create_field(int std_id,String field_name){
+
+        ContentValues values = new ContentValues();
+        values.put(Contract.Entry_extra_field.COLUMN_NAME_1, std_id);
+        values.put(Contract.Entry_extra_field.COLUMN_NAME_2, field_name);
+        values.put(Contract.Entry_extra_field.COLUMN_NAME_3, "N/A");
+
+        try {
+         return  db.insertOrThrow(
+                    Contract.Entry_extra_field.TABLE_NAME,
+                    null,
+                    values);
+        } catch (Exception e) {
+            e.printStackTrace();
+            ToastMessage.toast_text = "PLEASE , INSERT VALID DATA !";
+        }
+        return -1;
+    }
     public int total_class_taken(String title_name){
         db = Attendance_db.getReadableDatabase();
 

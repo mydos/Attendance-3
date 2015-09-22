@@ -74,6 +74,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + Contract.Entry_absent_record.COLUMN_NAME_2 + " ) " + " ) ";
 
 
+    private static final String SQL_CREATE_ENTRIES_EXTRA_FIELD ="CREATE TABLE "
+            + Contract.Entry_extra_field.TABLE_NAME + " (" + Contract.Entry_extra_field._ID + " INTEGER PRIMARY KEY " + COMMA_SEP
+            + Contract.Entry_extra_field.COLUMN_NAME_1 + INT_TYPE +" NOT NULL "+ COMMA_SEP
+            + Contract.Entry_extra_field.COLUMN_NAME_2 + TEXT_TYPE +" NOT NULL " +COMMA_SEP
+            + Contract.Entry_extra_field.COLUMN_NAME_3 + TEXT_TYPE + COMMA_SEP
+            + FOREIGN_KEY_CONSTRAINT + " ( " + Contract.Entry_extra_field.COLUMN_NAME_1 + " ) " + " REFERENCES "
+            + Contract.Entry_students.STUDENT_TABLE_NAME + " ( " + Contract.Entry_students._ID + " ) ON DELETE CASCADE " + COMMA_SEP
+            + " UNIQUE ( " + Contract.Entry_extra_field.COLUMN_NAME_1 + COMMA_SEP + Contract.Entry_extra_field.COLUMN_NAME_2
+            + " ) " + " ) ";
+
+
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         // TODO Auto-generated constructor stub
@@ -88,6 +99,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.execSQL(SQL_CREATE_ENTRIES_STUDENT);
             db.execSQL(SQL_CREATE_ENTRIES_ATTENDANCE_FREQUENCY);
             db.execSQL(SQL_CREATE_ENTRIES_ABSENT_RECORD);
+            db.execSQL(SQL_CREATE_ENTRIES_EXTRA_FIELD);
     }
 
     @Override

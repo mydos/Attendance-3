@@ -2,48 +2,81 @@ package com.sust.attendence.Manage;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.sust.attendence.Adapter.Drawer_list_adapter;
+import com.sust.attendence.Adapter.Extra_field_adapter;
 import com.sust.attendence.Adapter.Show_details_adapter;
 import com.sust.attendence.Database.DatabaseWork;
+import com.sust.attendence.Listener.DialogListener;
 import com.sust.attendence.Others.Absent_Record;
+import com.sust.attendence.Others.DataWrapper;
+import com.sust.attendence.Others.Drawer_item;
+import com.sust.attendence.Others.Extra_Field;
 import com.sust.attendence.Others.ToastMessage;
 import com.sust.attendence.Others.Utility;
 import com.sust.attendence.R;
+import com.sust.attendence.Session.UserSessionManager;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Ikhtiar on 7/28/2015.
  */
-public class StudentInformationActivity extends Activity implements View.OnClickListener,TextView.OnEditorActionListener{
+public class StudentInformationActivity extends AppCompatActivity implements View.OnClickListener,TextView.OnEditorActionListener,DialogListener{
     TextView total_class_taken,count_present,count_absent,name_tv,reg_no_tv;
-    private Show_details_adapter absent_record_adapter;
-    private ListView details_list_view;
+
     private EditText name_edt,reg_no_edt;
+    private TextView show_absent_details;
     private int count_tt;
     private String name,title_name;
     private int reg_no;
+    private Bundle bdl;
+    private ArrayList<Absent_Record> list;
+    private ListView drawer_list,extra_field_list;
+    private String[] drawer_list_text={"ADD FIELD","LOGOUT","EXIT"};
+    private int[] drawer_list_image={R.drawable.ic_action_import,R.drawable.ic_action_logout,R.drawable.ic_action_cancel};
+    private Drawer_list_adapter drawer_adapter_custom;
+    private UserSessionManager session;
+    private DialogFragment df;
+    private int std_id;
+    private Extra_field_adapter extra_field_adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_information);
 
-        Utility.setupUI(findViewById(R.id.parent_std_info),this);
+        Utility.setupUI(findViewById(R.id.parent_std_info), this);
+        check_session();
         initialize();
         grab_data();
+        setDrawer();
+        setupExtraField();
     }
 
+    protected void check_session() {
+        session = new UserSessionManager(this);
+        if (session.checkLogin())
+            finish();
+    }
     protected void initialize(){
         total_class_taken = (TextView) findViewById(R.id.total_class_tv);
         count_present = (TextView) findViewById(R.id.present_tv);
@@ -52,13 +85,72 @@ public class StudentInformationActivity extends Activity implements View.OnClick
         reg_no_tv = (TextView) findViewById(R.id.reg_no_tv);
         name_edt =(EditText) findViewById(R.id.name_edit);
         reg_no_edt = (EditText) findViewById(R.id.reg_no_edit);
+        show_absent_details =(TextView) findViewById(R.id.show_absent_details);
+        drawer_list=(ListView)findViewById(R.id.left_drawer_sia);
+        extra_field_list=(ListView)findViewById(R.id.extra_field_list);
+        extra_field_adapter =null;
 
-        details_list_view = (ListView) findViewById(R.id.absent_details_list);
-        absent_record_adapter = null;
+
+        show_absent_details.setOnClickListener(this);
+
+    }
+    protected void setupExtraField(){
+
+        ArrayList<Extra_Field> extraFields = new ArrayList<>();
+        extraFields = new DatabaseWork(this).getField(std_id);
+        extra_field_adapter = new Extra_field_adapter(this,R.layout.extra_field_list_item,extraFields);
+        extra_field_list.setAdapter(extra_field_adapter);
+    }
+
+    protected void setDrawer(){
+
+        ArrayList<Drawer_item> item_list = new ArrayList<>();
+        for(int i=0;i<drawer_list_text.length;i++){
+            item_list.add(new Drawer_item(drawer_list_text[i],drawer_list_image[i]));
+        }
+
+        LayoutInflater inflater = getLayoutInflater();
+        ViewGroup header = (ViewGroup) inflater.inflate(R.layout.drawer_list_header, drawer_list, false);
+
+
+        drawer_adapter_custom = new Drawer_list_adapter(this,R.layout.drawer_list_item,item_list);
+        drawer_list.addHeaderView(header,null,false);
+        drawer_list.setAdapter(drawer_adapter_custom);
+
+        drawer_list.setOnItemClickListener(new DrawerItemClickListener());
+    }
+
+
+
+    private class DrawerItemClickListener implements ListView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            selectItem(position);
+        }
+    }
+
+    protected void selectItem(int position){
+
+        switch(position){
+            case 1:
+                Bundle bdll =  new Bundle();
+                df = new CreateDialog();
+                bdll.putString("dialog_name", "create_field");
+                df.setArguments(bdll);
+                df.show(getSupportFragmentManager(), "dialog");
+                break;
+            case 2:
+                session.logoutUser();
+                finish();
+                break;
+            case 3:
+                ActivityCompat.finishAffinity(this);
+                break;
+        }
     }
 
     protected void grab_data(){
-        Bundle bdl =  getIntent().getExtras();
+        bdl =  getIntent().getExtras();
         title_name = bdl.getString("title_name");
         name = bdl.getString("name");
         reg_no= Integer.parseInt(bdl.getString("reg_no"));
@@ -79,12 +171,12 @@ public class StudentInformationActivity extends Activity implements View.OnClick
     }
     public void show_details(){
 
-        int std_id = new DatabaseWork(this).get_student_id(reg_no,title_name);
-        ArrayList<Absent_Record> list = new DatabaseWork(this).get_absent_record(std_id,title_name);
+        std_id = new DatabaseWork(this).get_student_id(reg_no, title_name);
+        list = new DatabaseWork(this).get_absent_record(std_id,title_name);
+
         int count_ab= list.size();
         update_present_absent(count_ab);
-        absent_record_adapter=new Show_details_adapter(this,R.layout.show_details_list_view,list);
-        details_list_view.setAdapter(absent_record_adapter);
+
     }
     public void update_present_absent(int count_ab){
         count_absent.setText("ABSENT : "+count_ab);
@@ -99,6 +191,13 @@ public class StudentInformationActivity extends Activity implements View.OnClick
                 break;
             case R.id.reg_no_edit:
                 reg_no_edt.setCursorVisible(true);
+                break;
+            case R.id.show_absent_details:
+                if(!list.isEmpty() && !list.equals(null)) {
+                    Intent i = new Intent(StudentInformationActivity.this, AbsentDetails.class);
+                    i.putParcelableArrayListExtra("list", list);
+                    startActivity(i);
+                }
                 break;
         }
 
@@ -148,5 +247,37 @@ public class StudentInformationActivity extends Activity implements View.OnClick
                 }
         }
         return false;
+    }
+
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog, Bundle bdll) {
+        String str = bdll.getString("dialog_name");
+        if(str!=null){
+            switch(str){
+                case "create_field":
+                    String field_name=bdll.getString("dialog_et_title_text");
+                    if (!field_name.equals(""))
+                    {
+                        if(new DatabaseWork(StudentInformationActivity.this).create_field_for_all(title_name, field_name)>0) {
+                            ToastMessage.toast_text = "Field Created Successfully!!!";
+                        }
+                        else{
+                            ToastMessage.toast_text = "Please Provide Valid Field Name.";
+                        }
+
+                    }else{
+                        ToastMessage.toast_text = "Please Provide Valid Field Name.";
+
+                    }
+                    ToastMessage.show_toast(StudentInformationActivity.this,ToastMessage.toast_text);
+                    break;
+            }
+        }
+        bdll.clear();
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog, Bundle bdl) {
+
     }
 }
