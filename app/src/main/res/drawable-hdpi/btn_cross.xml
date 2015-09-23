@@ -17,11 +17,11 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:state_pressed="false" android:state_focused="false"
-        android:drawable="@drawable/btn_cross_normal" />
+        android:drawable="@drawable/ic_action_cross_light_red" />
 
     <item android:state_pressed="true"
-        android:drawable="@drawable/btn_cross_pressed" />
+        android:drawable="@drawable/ic_action_cross_dark_red" />
 
     <item android:state_focused="true"
-        android:drawable="@drawable/btn_cross_selected" />
+        android:drawable="@drawable/ic_action_cross_dark_red" />
 </selector>

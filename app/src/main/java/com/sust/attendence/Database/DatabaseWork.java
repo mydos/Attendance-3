@@ -9,6 +9,7 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 
 import com.sust.attendence.Manage.ManageActivity;
+import com.sust.attendence.Manage.StudentInformationActivity;
 import com.sust.attendence.Others.Absent_Record;
 import com.sust.attendence.Others.Extra_Field;
 import com.sust.attendence.Others.Individual_info;
@@ -100,7 +101,7 @@ public class DatabaseWork {
         }
         return extraFields;
     }
-    public long create_field_for_all(String title_name,String field_name){
+    public long manage_field_for_all(String title_name,String field_name,String whatToDo){
         db = Attendance_db.getWritableDatabase();
 
         String[] projection = {Contract.Entry_students._ID};
@@ -123,12 +124,21 @@ public class DatabaseWork {
         long x=-1;
 
         for(int i=0;i<c.getCount();i++){
-            x = create_field(Integer.parseInt(c.getString(0)), field_name);
+            switch(whatToDo){
+                case "create_field":
+                    x = create_field(Integer.parseInt(c.getString(0)), field_name);
+                    break;
+                case "delete_field":
+                    x = delete_field(Integer.parseInt(c.getString(0)), field_name);
+                    break;
+            }
+
             c.moveToNext();
         }
 
         return x;
     }
+
     public long create_field(int std_id,String field_name){
 
         ContentValues values = new ContentValues();
@@ -147,6 +157,27 @@ public class DatabaseWork {
         }
         return -1;
     }
+
+    public long delete_field(int std_id, String field_name) {
+
+        String selection = Contract.Entry_extra_field.COLUMN_NAME_1 + "=? AND "
+                + Contract.Entry_extra_field.COLUMN_NAME_2 + "=? ";
+        String[] selectionArgs = {std_id+"",field_name};
+
+
+        int count = db.delete(
+                Contract.Entry_extra_field.TABLE_NAME,
+                selection,
+                selectionArgs
+        );
+//        ToastMessage.show_toast(context,title_name+ " row : "+count);
+        if (count > 0) {
+            return count;
+        } else {
+            return -1;
+        }
+    }
+
     public int total_class_taken(String title_name){
         db = Attendance_db.getReadableDatabase();
 
@@ -815,4 +846,27 @@ public class DatabaseWork {
             ToastMessage.toast_text = "SORRY!! ERROR UPDATING DATABASE!!.";
         }
     }
+    public void update_extra_field_value(int id,String value){
+        db=Attendance_db.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(Contract.Entry_extra_field.COLUMN_NAME_3, value);
+
+        String Selection=Contract.Entry_extra_field._ID +" = ? ";
+        String[] SelectionArgs={id+""};
+
+        int x=-1;
+        try {
+            x=db.update(
+                    Contract.Entry_extra_field.TABLE_NAME,
+                    values,
+                    Selection,
+                    SelectionArgs);
+        } catch (Exception e) {
+            e.printStackTrace();
+            ToastMessage.toast_text = "SORRY!! ERROR UPDATING DATABASE!!.";
+        }
+    }
+
+
 }

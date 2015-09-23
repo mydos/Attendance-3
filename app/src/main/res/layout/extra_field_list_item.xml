@@ -21,15 +21,13 @@
             android:layout_height="wrap_content"
             android:text="FIELD NAME : "/>
 
-        <EditText
+        <TextView
             android:id="@+id/display_name_edt"
             android:padding="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/display_field_name"
             android:layout_alignBaseline="@id/display_field_name"
-            android:imeOptions="actionDone"
-            android:cursorVisible="false"
             android:background="@android:color/transparent"
             android:textColor="#0f8f8f"
             android:text=" N/A "/>
@@ -58,5 +56,15 @@
             android:text=" N/A "/>
 
     </RelativeLayout>
+
+    <Button
+        android:id="@+id/delete_field_btn"
+        android:layout_width="35dp"
+        android:layout_height="40dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="20dp"
+        android:layout_alignParentRight="true"
+        android:focusable="false"
+        android:background="@drawable/btn_cross"/>
 
 </LinearLayout>

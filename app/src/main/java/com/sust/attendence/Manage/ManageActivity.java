@@ -31,6 +31,7 @@ import com.sust.attendence.Database.DatabaseWork;
 import com.sust.attendence.Listener.DialogListener;
 import com.sust.attendence.Others.Absent_Record;
 import com.sust.attendence.Others.Drawer_item;
+import com.sust.attendence.Others.Extra_Field;
 import com.sust.attendence.Others.Individual_info;
 import com.sust.attendence.Others.ToastMessage;
 import com.sust.attendence.R;
@@ -45,6 +46,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -291,8 +293,39 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
                             }
                         }
                    }
+                    //setting extra_field
+
+                    int student_id;
+                    String key,value;
+                    ArrayList<Extra_Field> per_student_field_info;
+                    Map<String,ArrayList<String>> all_student_field_info= new HashMap<String, ArrayList<String>>();
+                    for(int i=0;i<listview_adapter_custom.getCount();i++){
+                            student_id = new DatabaseWork(ManageActivity.this).get_student_id(
+                                    Integer.parseInt(listview_adapter_custom.getItem(i).getReg_no()),spinner_selected_item);
+
+                            if(student_id!=-999) {
+                                per_student_field_info = new DatabaseWork(ManageActivity.this).getField(student_id);
+
+                                for(int j=0;j<per_student_field_info.size();j++){
+                                    key = per_student_field_info.get(j).getField_name();
+                                    value = per_student_field_info.get(j).getField_value();
+                                    if(all_student_field_info.get(key)==null){
+                                        all_student_field_info.put(key,new ArrayList<String>());
+                                    }
+                                    all_student_field_info.get(key).add(value);
+                                }
+//
+                            }
+                  }
+
+
+
                     //writing to file
 
+
+                    //sorting extra field
+                    Map<String,ArrayList<String>> treeMap2 =new TreeMap<>(all_student_field_info);
+                    //
 
                     String temp="";
                     boolean f=true;
@@ -322,6 +355,16 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
                                     total=new DatabaseWork(ManageActivity.this).total_class_taken(spinner_selected_item);
                                     fw.append("TOTAL PRESENT ("+total+")");
                                     fw.append(',');
+
+                                    //here field name
+
+
+                                    for(String ke : treeMap2.keySet()){
+                                        fw.append(ke);
+                                        fw.append(',');
+                                    }
+                                    //
+
                                     fw.append('\n');
 
                                     fw.append(listview_adapter_custom.getItem(i).getReg_no());
@@ -352,6 +395,15 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
 
                             fw.append(count_p+"");
                             fw.append(',');
+
+
+
+                            //here field value
+                            for(String ke:treeMap2.keySet()){
+                                fw.append(treeMap2.get(ke).get(i));
+                                fw.append(',');
+                            }
+
 
                             fw.append('\n');
 

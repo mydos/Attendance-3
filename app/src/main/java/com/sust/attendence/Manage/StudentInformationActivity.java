@@ -98,7 +98,7 @@ public class StudentInformationActivity extends AppCompatActivity implements Vie
 
         ArrayList<Extra_Field> extraFields = new ArrayList<>();
         extraFields = new DatabaseWork(this).getField(std_id);
-        extra_field_adapter = new Extra_field_adapter(this,R.layout.extra_field_list_item,extraFields);
+        extra_field_adapter = new Extra_field_adapter(this,R.layout.extra_field_list_item,extraFields,title_name);
         extra_field_list.setAdapter(extra_field_adapter);
     }
 
@@ -258,7 +258,9 @@ public class StudentInformationActivity extends AppCompatActivity implements Vie
                     String field_name=bdll.getString("dialog_et_title_text");
                     if (!field_name.equals(""))
                     {
-                        if(new DatabaseWork(StudentInformationActivity.this).create_field_for_all(title_name, field_name)>0) {
+                        if(new DatabaseWork(StudentInformationActivity.this).manage_field_for_all(title_name, field_name,"create_field")>0) {
+                            extra_field_adapter.notifyDataSetChanged();
+                            setupExtraField();
                             ToastMessage.toast_text = "Field Created Successfully!!!";
                         }
                         else{
