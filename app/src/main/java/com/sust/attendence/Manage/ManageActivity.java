@@ -241,7 +241,7 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
 
     protected void export_operation(){
         File folder = new File(Environment.getExternalStorageDirectory()
-                + "/Attendance");
+                + "/Pocket_Attendance");
 
         boolean var = false;
         if (!folder.exists())

@@ -10,12 +10,14 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -44,7 +46,7 @@ public class StudentInformationActivity extends AppCompatActivity implements Vie
     TextView total_class_taken,count_present,count_absent,name_tv,reg_no_tv;
 
     private EditText name_edt,reg_no_edt;
-    private TextView show_absent_details;
+    private Button show_absent_details;
     private int count_tt;
     private String name,title_name;
     private int reg_no;
@@ -65,13 +67,25 @@ public class StudentInformationActivity extends AppCompatActivity implements Vie
         setContentView(R.layout.activity_student_information);
 
         Utility.setupUI(findViewById(R.id.parent_std_info), this);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+
         check_session();
         initialize();
         grab_data();
         setDrawer();
         setupExtraField();
     }
-
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish(); //this method close current activity and return to previous
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
     protected void check_session() {
         session = new UserSessionManager(this);
         if (session.checkLogin())
@@ -85,7 +99,7 @@ public class StudentInformationActivity extends AppCompatActivity implements Vie
         reg_no_tv = (TextView) findViewById(R.id.reg_no_tv);
         name_edt =(EditText) findViewById(R.id.name_edit);
         reg_no_edt = (EditText) findViewById(R.id.reg_no_edit);
-        show_absent_details =(TextView) findViewById(R.id.show_absent_details);
+        show_absent_details =(Button) findViewById(R.id.show_absent_details);
         drawer_list=(ListView)findViewById(R.id.left_drawer_sia);
         extra_field_list=(ListView)findViewById(R.id.extra_field_list);
         extra_field_adapter =null;

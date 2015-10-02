@@ -2,7 +2,9 @@
 <resources>
 
 
-    <string name="app_name">Attendence</string>
+    <string name="app_name">POCKET ATTENDANCE</string>
+    <string name="activity_name_sia">STUDENT PROFILE</string>
+    <string name="activity_name_ad">ABSENT DETAILS</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="spinner_title">COURSE TITLE</string>

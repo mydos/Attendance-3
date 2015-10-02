@@ -1591,17 +1591,19 @@ containing a value of this type.
         public static final int ic_action_tik=0x7f020057;
         public static final int ic_action_tik_pressed=0x7f020058;
         public static final int ic_launcher=0x7f020059;
-        public static final int list_divider=0x7f02005a;
-        public static final int notification_template_icon_bg=0x7f020064;
-        public static final int one=0x7f02005b;
-        public static final int primary_round_normal=0x7f02005c;
-        public static final int primary_round_pressed=0x7f02005d;
-        public static final int splash_background=0x7f02005e;
-        public static final int three=0x7f02005f;
-        public static final int toggle_off=0x7f020060;
-        public static final int toggle_on=0x7f020061;
-        public static final int toggle_selector=0x7f020062;
-        public static final int two=0x7f020063;
+        public static final int launcher_icon=0x7f02005a;
+        public static final int launcher_icon48=0x7f02005b;
+        public static final int list_divider=0x7f02005c;
+        public static final int notification_template_icon_bg=0x7f020066;
+        public static final int one=0x7f02005d;
+        public static final int primary_round_normal=0x7f02005e;
+        public static final int primary_round_pressed=0x7f02005f;
+        public static final int splash_background=0x7f020060;
+        public static final int three=0x7f020061;
+        public static final int toggle_off=0x7f020062;
+        public static final int toggle_on=0x7f020063;
+        public static final int toggle_selector=0x7f020064;
+        public static final int two=0x7f020065;
     }
     public static final class id {
         public static final int absent_details_list=0x7f09004e;
@@ -1855,10 +1857,12 @@ containing a value of this type.
         public static final int abc_shareactionprovider_share_with_application=0x7f0b000f;
         public static final int abc_toolbar_collapse_description=0x7f0b0010;
         public static final int action_settings=0x7f0b0011;
-        public static final int app_name=0x7f0b0012;
-        public static final int hello_world=0x7f0b0013;
-        public static final int spinner_title=0x7f0b0014;
-        public static final int status_bar_notification_info_overflow=0x7f0b0015;
+        public static final int activity_name_ad=0x7f0b0012;
+        public static final int activity_name_sia=0x7f0b0013;
+        public static final int app_name=0x7f0b0014;
+        public static final int hello_world=0x7f0b0015;
+        public static final int spinner_title=0x7f0b0016;
+        public static final int status_bar_notification_info_overflow=0x7f0b0017;
     }
     public static final class style {
         public static final int AlertDialog_AppCompat=0x7f0c0000;

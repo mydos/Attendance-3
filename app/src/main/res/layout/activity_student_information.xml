@@ -22,10 +22,12 @@
             android:layout_marginLeft="20dp"
             android:textSize="20sp"
             android:padding="10dp"
-            android:text="NAME : " />
+            android:text="NAME :" />
         <EditText
             android:id="@+id/name_edit"
-            android:padding="10dp"
+            android:paddingBottom="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/name_tv"
@@ -54,10 +56,12 @@
             android:layout_marginLeft="20dp"
             android:textSize="20sp"
             android:padding="5dp"
-            android:text="ID : " />
+            android:text="ID :" />
         <EditText
             android:id="@+id/reg_no_edit"
-            android:padding="10dp"
+            android:paddingBottom="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/reg_no_tv"
@@ -98,14 +102,23 @@
             android:layout_toRightOf="@id/present_tv"
             android:padding="3dp"
             android:text="ABSENT : " />
-        <TextView
+        <!--<TextView-->
+            <!--android:id="@+id/show_absent_details"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_below="@id/present_tv"-->
+            <!--android:padding="3dp"-->
+            <!--android:clickable="true"-->
+            <!--android:text="DETAILS : "/>-->
+        <Button
             android:id="@+id/show_absent_details"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/present_tv"
-            android:padding="3dp"
-            android:clickable="true"
-            android:text="DETAILS : "/>
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="20dp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:background="@drawable/button_style"
+            android:text="DETAILS"/>
     </RelativeLayout>
 
     <RelativeLayout
