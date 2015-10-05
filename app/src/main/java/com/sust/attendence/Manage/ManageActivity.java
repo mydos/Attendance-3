@@ -496,7 +496,7 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
                 bdl.putString("name",name);
                 call_intent.putExtras(bdl);
                 startActivity(call_intent);
-                ToastMessage.show_toast(ManageActivity.this,"Yes");
+//                ToastMessage.show_toast(ManageActivity.this,"Yes");
                 return true;
             }
         });
@@ -534,7 +534,7 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
                         reg_no[position]=Integer.parseInt(((TextView)view.findViewById(R.id.display_reg)).getText().toString());
                         ++total;
                     }
-                    ToastMessage.show_toast(ManageActivity.this, listview_adapter_custom.getCount() + "  done  " + total);
+//                    ToastMessage.show_toast(ManageActivity.this, listview_adapter_custom.getCount() + "  done  " + total);
                 }
             });
         } else {
@@ -656,7 +656,7 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
                         }
                     }
 
-                    ToastMessage.show_toast(this,ToastMessage.toast_text+v);
+//                    ToastMessage.show_toast(this,ToastMessage.toast_text+v);
                     manage_listitem();
                     break;
                 default:
@@ -680,7 +680,7 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
             if (resultCode == RESULT_OK) {
                 String str_path=data.getStringExtra("file_path");
                 import_operation(str_path);
-                ToastMessage.show_toast(this,str_path);
+//                ToastMessage.show_toast(this,str_path);
 
             }
         }
@@ -725,7 +725,7 @@ public class ManageActivity extends FragmentActivity implements View.OnClickList
         {
             e.printStackTrace();
             progDailog.dismiss();
-            ToastMessage.show_toast(this,str+"PLEASE SELECT CSV OR TXT EXTENSION.");
+            ToastMessage.show_toast(this,str+"PLEASE SELECT CSV/TXT EXTENSION OR VALID FILE.");
         }
     }
 

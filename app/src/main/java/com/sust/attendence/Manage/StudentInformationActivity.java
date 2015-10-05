@@ -198,6 +198,12 @@ public class StudentInformationActivity extends AppCompatActivity implements Vie
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        show_details();
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.name_edit:

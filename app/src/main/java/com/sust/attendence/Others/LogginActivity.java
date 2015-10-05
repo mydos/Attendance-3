@@ -30,7 +30,7 @@ import com.sust.attendence.Manage.CreateDialog;
 import com.sust.attendence.Manage.ManageActivity;
 import com.sust.attendence.R;
 
-public class LogginActivity extends FragmentActivity implements OnClickListener,DialogListener {
+public class LogginActivity extends FragmentActivity implements OnClickListener, DialogListener {
 
     private EditText login_email_et, login_password_et, register_name_et,
             register_email_et, register_password_et;
@@ -43,22 +43,23 @@ public class LogginActivity extends FragmentActivity implements OnClickListener,
     public static DatabaseHelper Attendance_db;
     private DialogFragment df;
     private Bundle bdl;
+    private addCustomTextChangedListener listener1,listener2,listener3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loggin);
-        Utility.setupUI(findViewById(R.id.parent_login_activity),this);
+        Utility.setupUI(findViewById(R.id.parent_login_activity), this);
         initialize();
         login_btn.setOnClickListener(this);
         register_btn.setOnClickListener(this);
-        new DatabaseWork(this).delete_individual("","cse331");
+        new DatabaseWork(this).delete_individual("", "cse331");
     }
 
     protected void initialize() {
 
         df = new CreateDialog();
-        bdl=new Bundle();
+        bdl = new Bundle();
         Attendance_db = new DatabaseHelper(this);
 
         register_name_et = (EditText) findViewById(R.id.register_name_field_et);
@@ -106,9 +107,13 @@ public class LogginActivity extends FragmentActivity implements OnClickListener,
                 validation_map.put("register_password_et", false);
                 validation_map.put("register_name_et", false);
 
-                new addCustomTextChangedListener(this, register_name_et);
-                new addCustomTextChangedListener(this, register_email_et);
-                new addCustomTextChangedListener(this, register_password_et);
+                listener1 = new addCustomTextChangedListener(this, register_name_et);
+                listener2 = new addCustomTextChangedListener(this, register_email_et);
+                listener3 = new addCustomTextChangedListener(this, register_password_et);
+
+                listener1.validate();
+                listener2.validate();
+                listener3.validate();
 
                 if (validation_map.get("register_name_et") == true && validation_map.get("register_email_et") == true
                         && validation_map.get("register_password_et") == true) {
@@ -121,13 +126,15 @@ public class LogginActivity extends FragmentActivity implements OnClickListener,
                     register_name_et.setText("");
                     register_email_et.setText("");
                     register_password_et.setText("");
-                    new DatabaseWork(context).register_instructor(register_name_et_text, register_email_et_text, register_password_et_text);
-                    ToastMessage.toast_text = "Registration completed.";
-                } else {
-                    ToastMessage.toast_text = "please, provide required information.";
-                }
 
-                ToastMessage.show_toast(LogginActivity.this, com.sust.attendence.Others.ToastMessage.toast_text);
+                    listener1.removeCustomTextChangedListener();
+                    listener2.removeCustomTextChangedListener();
+                    listener3.removeCustomTextChangedListener();
+
+                    new DatabaseWork(context).register_instructor(register_name_et_text, register_email_et_text, register_password_et_text);
+
+                    ToastMessage.show_toast(LogginActivity.this, "Registration completed.");
+                }
                 break;
             case R.id.login_btn:
                 bdl.clear();
@@ -140,7 +147,7 @@ public class LogginActivity extends FragmentActivity implements OnClickListener,
 
     @Override
     public void onDialogPositiveClick(DialogFragment dialog, Bundle bdll) {
-        if(bdll.getBoolean("login_successful")) {
+        if (bdll.getBoolean("login_successful")) {
             Intent manu_intent = new Intent(LogginActivity.this, ManageActivity.class);
             startActivity(manu_intent);
             finish();

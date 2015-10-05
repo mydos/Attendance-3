@@ -30,7 +30,7 @@ public class AbsentDetails extends AppCompatActivity {
         setContentView(R.layout.activity_absent_details);
          Utility.setupUI(findViewById(R.id.parent_details_info), this);
 //        Utility.hideSoftKeyboard(AbsentDetails.this);
-        ToastMessage.show_toast(this,  " done ");
+//        ToastMessage.show_toast(this,  " done ");
         initialize();
     }
 
@@ -38,7 +38,7 @@ public class AbsentDetails extends AppCompatActivity {
         details_list_view = (ListView) findViewById(R.id.absent_details_list);
 
         ArrayList<Absent_Record> list = getIntent().getParcelableArrayListExtra("list");
-        ToastMessage.show_toast(this,list.size()+" done ");
+//        ToastMessage.show_toast(this,list.size()+" done ");
         absent_record_adapter=new Show_details_adapter(this,R.layout.show_details_list_view,list);
         details_list_view.setAdapter(absent_record_adapter);
     }

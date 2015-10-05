@@ -273,7 +273,7 @@ public class DatabaseWork {
                     Contract.Entry_absent_record.TABLE_NAME,
                     null,
                     values);
-            ToastMessage.toast_text = "SUCCESS ENTRY.:)";
+            ToastMessage.toast_text = "SUCCESS ENTRY.";
         } catch (Exception e) {
             e.printStackTrace();
             ToastMessage.toast_text = "SORRY!! ERROR IN INPUT!!.:("+e.getMessage();
@@ -310,7 +310,7 @@ public class DatabaseWork {
             c.moveToNext();
         }
 
-        ToastMessage.show_toast(context,v);
+//        ToastMessage.show_toast(context,v);
 
     }
     public boolean set_as_present(int id){
